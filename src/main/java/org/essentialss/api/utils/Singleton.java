@@ -12,14 +12,14 @@ public class Singleton<T> {
     }
 
     public T get() {
-        if (cached == null) {
-            return runGetter();
+        if (null == cached) {
+            return this.runGetter();
         }
         return this.cached;
     }
 
     private synchronized T runGetter() {
-        if (this.cached != null) {
+        if (null != this.cached) {
             return this.cached;
         }
         this.cached = this.getter.get();

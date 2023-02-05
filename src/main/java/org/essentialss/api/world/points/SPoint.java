@@ -1,4 +1,4 @@
-package org.essentialss.api.world.warp;
+package org.essentialss.api.world.points;
 
 import org.essentialss.api.world.SWorldData;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,6 @@ public interface SPoint {
     @NotNull Vector3d position();
 
     default @NotNull Location<?, ?> location() {
-        return worldData().spongeWorld().location(position());
+        return this.worldData().spongeWorld().location(this.position());
     }
 }
