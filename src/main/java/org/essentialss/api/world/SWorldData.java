@@ -1,15 +1,20 @@
 package org.essentialss.api.world;
 
+import org.essentialss.api.utils.CrossSpongePlatformUtils;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.world.points.SPoint;
 import org.essentialss.api.world.points.home.SHomeBuilder;
 import org.essentialss.api.world.points.jail.SJailSpawnPoint;
+import org.essentialss.api.world.points.jail.SJailSpawnPointBuilder;
 import org.essentialss.api.world.points.spawn.SSpawnPoint;
 import org.essentialss.api.world.points.spawn.SSpawnPointBuilder;
 import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
 import org.essentialss.api.world.points.warp.SWarpBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.world.World;
 import org.spongepowered.math.vector.Vector3d;
 
@@ -22,13 +27,46 @@ public interface SWorldData {
 
     @NotNull UnmodifiableCollection<SPoint> points();
 
-    void register(@NotNull SHomeBuilder builder);
+    boolean register(@NotNull SHomeBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    void register(@NotNull SSpawnPointBuilder builder);
+    boolean register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    void register(@NotNull SWarpBuilder builder);
+    boolean register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    void register(@NotNull SJailSpawnPoint builder);
+    boolean register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
+
+    default boolean register(@NotNull SHomeBuilder builder, @NotNull Cause cause) {
+        return this.register(builder, true, cause);
+    }
+
+    default boolean register(@NotNull SSpawnPointBuilder builder, @NotNull Cause cause) {
+        return this.register(builder, true, cause);
+    }
+
+    default boolean register(@NotNull SWarpBuilder builder, @NotNull Cause cause) {
+        return this.register(builder, true, cause);
+    }
+
+    default boolean register(@NotNull SJailSpawnPointBuilder builder, @NotNull Cause cause) {
+        return this.register(builder, true, cause);
+    }
+
+    default boolean register(@NotNull SHomeBuilder builder) {
+        return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean register(@NotNull SSpawnPointBuilder builder) {
+        return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean register(@NotNull SWarpBuilder builder) {
+        return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean register(@NotNull SJailSpawnPointBuilder builder) {
+        return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
 
     default <P extends SPoint> @NotNull UnmodifiableCollection<P> pointsOf(@NotNull Class<P> type) {
         return new UnmodifiableCollection<>(this
