@@ -7,19 +7,13 @@ import org.essentialss.api.world.SWorldManager;
 import org.essentialss.api.world.points.warp.SWarp;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCompletion;
-import org.spongepowered.api.command.exception.ArgumentParseException;
-import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.command.parameter.managed.ValueCompleter;
-import org.spongepowered.api.command.parameter.managed.ValueParser;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.client.ClientWorld;
-import org.spongepowered.math.vector.Vector3d;
-import org.spongepowered.math.vector.Vector3i;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -112,25 +106,16 @@ public final class SParameters {
         });
     }
 
-    public static Parameter.Value.Builder<Vector3d> location(boolean blockLocation) {
-        return Parameter.builder(Vector3d.class).completer((context, currentInput) -> {
-            String[] inputSplit = currentInput.split(" ");
-            switch (inputSplit.length) {
-                case 1:
-                    return locationSuggestion(context, location -> blockLocation ? location.blockX() : location.x());
-                case 2:
-                    return locationSuggestion(context, location -> blockLocation ? location.blockY() : location.y());
-                case 3:
-                    return locationSuggestion(context, location -> blockLocation ? location.blockZ() : location.z());
-                default:
-                    return Collections.emptyList();
-
+    public static Parameter.Value.Builder<Double> location(boolean blockLocation,
+                                                           Function<Location<?, ?>, Double> function) {
+        return Parameter.doubleNumber().completer((context, currentInput) -> {
+            if (!(context.subject() instanceof Locatable)) {
+                return Collections.emptyList();
             }
-        }).addParser((parameterKey, reader, context) -> {
-            double x = blockLocation ? reader.parseInt() : reader.parseDouble();
-            double y = blockLocation ? reader.parseInt() : reader.parseDouble();
-            double z = blockLocation ? reader.parseInt() : reader.parseDouble();
-            return Optional.of(new Vector3d(x, y, z));
+            Locatable locatable = (Locatable) context.subject();
+            String number = blockLocation ? function.apply(locatable.location()).toString() : (
+                    function.apply(locatable.location()).intValue() + "");
+            return Collections.singletonList(CommandCompletion.of(number));
         });
     }
 

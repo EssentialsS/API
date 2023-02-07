@@ -2,6 +2,7 @@ package org.essentialss.api.world;
 
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.SPoint;
 import org.essentialss.api.world.points.home.SHomeBuilder;
 import org.essentialss.api.world.points.jail.SJailSpawnPoint;
@@ -13,17 +14,23 @@ import org.essentialss.api.world.points.warp.SWarp;
 import org.essentialss.api.world.points.warp.SWarpBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Cause;
+import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.server.ServerWorld;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.math.vector.Vector3d;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public interface SWorldData {
+public interface SWorldData extends StringIdentifier {
 
     @NotNull World<?, ?> spongeWorld();
+
+    void reloadFromConfig() throws ConfigurateException;
+
+    void saveToConfig() throws ConfigurateException;
 
     @NotNull UnmodifiableCollection<SPoint> points();
 
@@ -137,4 +144,12 @@ public interface SWorldData {
         return this.warps().parallelStream().filter(warp -> warp.identifier().equalsIgnoreCase(identifier)).findAny();
     }
 
+    @Override
+    default @NotNull String identifier() {
+        if (this.spongeWorld() instanceof ServerWorld) {
+            return ((ServerWorld) this.spongeWorld()).key().formatted();
+        }
+        Context context = this.spongeWorld().context();
+        return context.toString();
+    }
 }
