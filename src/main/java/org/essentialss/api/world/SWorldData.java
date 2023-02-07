@@ -30,6 +30,8 @@ public interface SWorldData extends StringIdentifier {
 
     void reloadFromConfig() throws ConfigurateException;
 
+    void clearPoints();
+
     void saveToConfig() throws ConfigurateException;
 
     @NotNull UnmodifiableCollection<SPoint> points();
