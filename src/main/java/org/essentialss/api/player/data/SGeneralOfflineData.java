@@ -1,33 +1,26 @@
-package org.essentialss.api.player;
+package org.essentialss.api.player.data;
 
+import org.essentialss.api.Serializable;
 import org.essentialss.api.player.mail.MailMessage;
 import org.essentialss.api.player.mail.MailMessageBuilder;
-import org.essentialss.api.player.teleport.TeleportRequest;
-import org.essentialss.api.player.teleport.TeleportRequestBuilder;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
-import org.essentialss.api.world.SWorldData;
 import org.essentialss.api.world.points.home.SHome;
 import org.essentialss.api.world.points.jail.SJailSpawnPoint;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public interface SPlayerData {
+public interface SGeneralOfflineData extends Serializable {
 
-    @NotNull Player spongePlayer();
+    @NotNull UUID uuid();
 
     boolean canLooseItemsWhenUsed();
 
     void setCanLooseItemsWhenUsed(boolean check);
-
-    boolean isAwayFromKeyboard();
-
-    void setAwayFromKeyboard(boolean afk);
 
     boolean muted();
 
@@ -43,15 +36,13 @@ public interface SPlayerData {
 
     void releaseFromJail(@NotNull Location<?, ?> spawnTo);
 
+    void releaseFromJail();
+
     void sendToJail(@NotNull SJailSpawnPoint point, @Nullable Duration length);
 
     @NotNull UnmodifiableCollection<SHome> homes();
 
-    @NotNull UnmodifiableCollection<TeleportRequest> teleportRequests();
-
     @NotNull LinkedList<Location<?, ?>> backTeleportLocations();
-
-    @NotNull OptionalInt backTeleportIndex();
 
     void setBackTeleportLocations(Collection<Location<?, ?>> locations);
 
@@ -63,14 +54,6 @@ public interface SPlayerData {
         this.setBackTeleportLocations(Collections.emptyList());
     }
 
-    void register(@NotNull TeleportRequestBuilder builder);
-
-    void decline(@NotNull TeleportRequest request);
-
-    void accept(@NotNull TeleportRequest request) throws IllegalStateException;
-
-    @NotNull SWorldData world();
-
     @NotNull UnmodifiableCollection<MailMessage> mailMessages();
 
     void removeMessage(@NotNull MailMessage message);
@@ -79,10 +62,6 @@ public interface SPlayerData {
 
     default Optional<SHome> home(@NotNull String homeName) {
         return this.homes().parallelStream().filter(home -> home.identifier().equalsIgnoreCase(homeName)).findAny();
-    }
-
-    default void releaseFromJail() {
-        this.releaseFromJail(this.world().spawnPoint(this.spongePlayer().position()).location());
     }
 
 }

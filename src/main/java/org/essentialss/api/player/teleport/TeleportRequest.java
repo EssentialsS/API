@@ -1,6 +1,6 @@
 package org.essentialss.api.player.teleport;
 
-import org.essentialss.api.player.SPlayerData;
+import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.utils.identifier.ObjectSender;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.world.Location;
@@ -14,7 +14,7 @@ public interface TeleportRequest extends ObjectSender {
 
     @NotNull TeleportRequestDirection directionOfTeleport();
 
-    @NotNull Function<SPlayerData, Location<?, ?>> teleportToLocation();
+    @NotNull Function<SGeneralPlayerData, Location<?, ?>> teleportToLocation();
 
     @NotNull LocalDateTime sentTime();
 

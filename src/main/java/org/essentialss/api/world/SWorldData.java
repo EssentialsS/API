@@ -1,5 +1,6 @@
 package org.essentialss.api.world;
 
+import org.essentialss.api.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
@@ -18,21 +19,16 @@ import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.server.ServerWorld;
-import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.math.vector.Vector3d;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public interface SWorldData extends StringIdentifier {
+public interface SWorldData extends StringIdentifier, Serializable {
 
     @NotNull World<?, ?> spongeWorld();
 
-    void reloadFromConfig() throws ConfigurateException;
-
     void clearPoints();
-
-    void saveToConfig() throws ConfigurateException;
 
     @NotNull UnmodifiableCollection<SPoint> points();
 

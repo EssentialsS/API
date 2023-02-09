@@ -1,6 +1,6 @@
 package org.essentialss.api.player.teleport;
 
-import org.essentialss.api.player.SPlayerData;
+import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.entity.living.player.Player;
@@ -13,17 +13,17 @@ import java.util.function.Function;
 @SuppressWarnings("allow-nullable")
 public class TeleportRequestBuilder {
 
-    private Function<SPlayerData, Location<?, ?>> to;
+    private Function<SGeneralPlayerData, Location<?, ?>> to;
     private TeleportRequestDirection direction;
     private Object sender;
     private String senderDisplayName;
     private Duration validForLength;
 
-    public @Nullable Function<SPlayerData, Location<?, ?>> getTo() {
+    public @Nullable Function<SGeneralPlayerData, Location<?, ?>> getTo() {
         return this.to;
     }
 
-    public @NotNull TeleportRequestBuilder setTo(@NotNull Function<SPlayerData, Location<?, ?>> to) {
+    public @NotNull TeleportRequestBuilder setTo(@NotNull Function<SGeneralPlayerData, Location<?, ?>> to) {
         this.to = to;
         return this;
     }

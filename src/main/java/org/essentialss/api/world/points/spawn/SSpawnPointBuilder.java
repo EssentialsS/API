@@ -6,12 +6,13 @@ import org.spongepowered.math.vector.Vector3d;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
 @SuppressWarnings("allow-nullable")
 public class SSpawnPointBuilder {
 
     private Vector3d point;
-    private Collection<SSpawnType> spawnType;
+    private Collection<SSpawnType> spawnType = new LinkedHashSet<>();
 
     public @Nullable Vector3d point() {
         return this.point;
@@ -22,7 +23,7 @@ public class SSpawnPointBuilder {
         return this;
     }
 
-    public @Nullable Collection<SSpawnType> spawnTypes() {
+    public @NotNull Collection<SSpawnType> spawnTypes() {
         return this.spawnType;
     }
 
