@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
+import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import javax.naming.ConfigurationException;
 import java.io.File;
 
 public interface SConfig {
@@ -25,6 +25,6 @@ public interface SConfig {
         throw new RuntimeException("Unsupported filetype of " + name.substring(name.lastIndexOf(".")));
     }
 
-    void generateDefault() throws ConfigurationException;
+    void generateDefault() throws SerializationException;
 
 }

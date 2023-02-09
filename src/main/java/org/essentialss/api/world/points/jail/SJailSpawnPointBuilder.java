@@ -14,7 +14,7 @@ public class SJailSpawnPointBuilder {
         return this.point;
     }
 
-    public @NotNull SJailSpawnPointBuilder point(@NotNull Vector3d point) {
+    public @NotNull SJailSpawnPointBuilder setPoint(@NotNull Vector3d point) {
         this.point = point;
         return this;
     }
@@ -23,7 +23,7 @@ public class SJailSpawnPointBuilder {
         return this.jailName;
     }
 
-    public @NotNull SJailSpawnPointBuilder jailName(@NotNull String jailName) {
+    public @NotNull SJailSpawnPointBuilder setJailName(@NotNull String jailName) {
         this.jailName = jailName;
         return this;
     }

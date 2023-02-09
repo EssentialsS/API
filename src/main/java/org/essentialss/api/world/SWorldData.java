@@ -123,7 +123,7 @@ public interface SWorldData extends StringIdentifier {
         double distance = Integer.MAX_VALUE;
         SSpawnPoint point = null;
         for (SSpawnPoint spawn : this.spawnPoints()) {
-            if (ignoreFirstLogin && (SSpawnType.FIRST_LOGIN == spawn.type())) {
+            if (ignoreFirstLogin && (spawn.types().size() == 1) && spawn.types().contains(SSpawnType.FIRST_LOGIN)) {
                 continue;
             }
             double jailDistance = spawn.position().distanceSquared(blockPosition);

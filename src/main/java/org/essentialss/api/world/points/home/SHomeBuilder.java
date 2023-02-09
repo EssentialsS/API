@@ -14,7 +14,7 @@ public class SHomeBuilder {
         return this.point;
     }
 
-    public @NotNull SHomeBuilder point(@NotNull Vector3d point) {
+    public @NotNull SHomeBuilder setPoint(@NotNull Vector3d point) {
         this.point = point;
         return this;
     }
@@ -23,7 +23,7 @@ public class SHomeBuilder {
         return this.home;
     }
 
-    public @NotNull SHomeBuilder home(@NotNull String home) {
+    public @NotNull SHomeBuilder setHome(@NotNull String home) {
         this.home = home;
         return this;
     }

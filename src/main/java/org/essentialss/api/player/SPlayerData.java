@@ -15,7 +15,7 @@ import org.spongepowered.api.world.Location;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 
 public interface SPlayerData {
 
@@ -23,35 +23,45 @@ public interface SPlayerData {
 
     boolean canLooseItemsWhenUsed();
 
-    void canLooseItemsWhenUsed(boolean check);
+    void setCanLooseItemsWhenUsed(boolean check);
 
     boolean isAwayFromKeyboard();
 
-    void awayFromKeyboard(boolean afk);
+    void setAwayFromKeyboard(boolean afk);
 
     boolean muted();
 
-    void muted(boolean mute);
+    void setMuted(boolean mute);
 
     boolean isInJail();
 
     boolean isPreventingTeleportRequests();
 
-    void preventTeleportRequests(boolean prevent);
+    void setPreventTeleportRequests(boolean prevent);
 
     Optional<LocalDateTime> releasedFromJailTime();
 
     void releaseFromJail(@NotNull Location<?, ?> spawnTo);
 
-    void jail(@NotNull SJailSpawnPoint point, @Nullable Duration length);
+    void sendToJail(@NotNull SJailSpawnPoint point, @Nullable Duration length);
 
     @NotNull UnmodifiableCollection<SHome> homes();
 
     @NotNull UnmodifiableCollection<TeleportRequest> teleportRequests();
 
-    @NotNull Optional<Location<?, ?>> backTeleportLocation();
+    @NotNull LinkedList<Location<?, ?>> backTeleportLocations();
 
-    void backTeleportLocation(@Nullable Location<?, ?> location);
+    @NotNull OptionalInt backTeleportIndex();
+
+    void setBackTeleportLocations(Collection<Location<?, ?>> locations);
+
+    void addBackTeleportLocation(@NotNull Location<?, ?> location);
+
+    void removeBackTeleportLocation(@NotNull Location<?, ?> location);
+
+    default void clearBackTeleportLocations() {
+        this.setBackTeleportLocations(Collections.emptyList());
+    }
 
     void register(@NotNull TeleportRequestBuilder builder);
 
@@ -66,10 +76,6 @@ public interface SPlayerData {
     void removeMessage(@NotNull MailMessage message);
 
     void addMailMessage(@NotNull MailMessageBuilder builder);
-
-    default void removeBackTeleportLocation() {
-        this.backTeleportLocation(null);
-    }
 
     default Optional<SHome> home(@NotNull String homeName) {
         return this.homes().parallelStream().filter(home -> home.identifier().equalsIgnoreCase(homeName)).findAny();

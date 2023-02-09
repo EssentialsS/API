@@ -14,7 +14,7 @@ public class SWarpBuilder {
         return this.point;
     }
 
-    public @NotNull SWarpBuilder point(@NotNull Vector3d point) {
+    public @NotNull SWarpBuilder setPoint(@NotNull Vector3d point) {
         this.point = point;
         return this;
     }
@@ -23,7 +23,7 @@ public class SWarpBuilder {
         return this.name;
     }
 
-    public @NotNull SWarpBuilder name(@NotNull String name) {
+    public @NotNull SWarpBuilder setName(@NotNull String name) {
         this.name = name;
         return this;
     }
