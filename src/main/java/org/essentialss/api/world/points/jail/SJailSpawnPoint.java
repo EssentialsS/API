@@ -5,4 +5,6 @@ import org.essentialss.api.world.points.SPoint;
 
 public interface SJailSpawnPoint extends SPoint, StringIdentifier {
 
+    SJailSpawnPointBuilder builder();
+
 }

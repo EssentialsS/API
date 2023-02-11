@@ -4,7 +4,9 @@ import org.essentialss.api.Serializable;
 import org.essentialss.api.player.mail.MailMessage;
 import org.essentialss.api.player.mail.MailMessageBuilder;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.home.SHome;
+import org.essentialss.api.world.points.home.SHomeBuilder;
 import org.essentialss.api.world.points.jail.SJailSpawnPoint;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +36,11 @@ public interface SGeneralOfflineData extends Serializable {
 
     Optional<LocalDateTime> releasedFromJailTime();
 
-    void releaseFromJail(@NotNull Location<?, ?> spawnTo);
+    void releaseFromJail(@NotNull OfflineLocation location);
+
+    default void releaseFromJail(Location<?, ?> loc) {
+        this.releaseFromJail(new OfflineLocation(loc));
+    }
 
     void releaseFromJail();
 
@@ -42,13 +48,23 @@ public interface SGeneralOfflineData extends Serializable {
 
     @NotNull UnmodifiableCollection<SHome> homes();
 
-    @NotNull LinkedList<Location<?, ?>> backTeleportLocations();
+    void register(@NotNull SHomeBuilder builder);
 
-    void setBackTeleportLocations(Collection<Location<?, ?>> locations);
+    @NotNull LinkedList<OfflineLocation> backTeleportLocations();
 
-    void addBackTeleportLocation(@NotNull Location<?, ?> location);
+    void setBackTeleportLocations(Collection<OfflineLocation> locations);
 
-    void removeBackTeleportLocation(@NotNull Location<?, ?> location);
+    void addBackTeleportLocation(@NotNull OfflineLocation location);
+
+    default void addBackTeleportLocation(@NotNull Location<?, ?> location) {
+        this.addBackTeleportLocation(new OfflineLocation(location));
+    }
+
+    void removeBackTeleportLocation(@NotNull OfflineLocation location);
+
+    default void removeBackTeleportLocation(@NotNull Location<?, ?> location) {
+        this.removeBackTeleportLocation(new OfflineLocation(location));
+    }
 
     default void clearBackTeleportLocations() {
         this.setBackTeleportLocations(Collections.emptyList());

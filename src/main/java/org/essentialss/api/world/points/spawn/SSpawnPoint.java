@@ -7,4 +7,6 @@ public interface SSpawnPoint extends SPoint {
 
     UnmodifiableCollection<SSpawnType> types();
 
+    SSpawnPointBuilder builder();
+
 }

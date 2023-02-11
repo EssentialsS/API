@@ -4,6 +4,7 @@ import org.essentialss.api.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
+import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.SPoint;
 import org.essentialss.api.world.points.home.SHomeBuilder;
 import org.essentialss.api.world.points.jail.SJailSpawnPoint;
@@ -15,10 +16,9 @@ import org.essentialss.api.world.points.warp.SWarp;
 import org.essentialss.api.world.points.warp.SWarpBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.event.Cause;
-import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.math.vector.Vector3d;
 
 import java.util.Optional;
@@ -26,7 +26,9 @@ import java.util.stream.Collectors;
 
 public interface SWorldData extends StringIdentifier, Serializable {
 
-    @NotNull World<?, ?> spongeWorld();
+    @NotNull Optional<World<?, ?>> spongeWorld();
+
+    Optional<ResourceKey> worldKey();
 
     void clearPoints();
 
@@ -39,6 +41,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
     boolean register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
 
     boolean register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
+
+    boolean isWorld(@NotNull World<?, ?> world);
 
     default boolean register(@NotNull SHomeBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
@@ -142,12 +146,7 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return this.warps().parallelStream().filter(warp -> warp.identifier().equalsIgnoreCase(identifier)).findAny();
     }
 
-    @Override
-    default @NotNull String identifier() {
-        if (this.spongeWorld() instanceof ServerWorld) {
-            return ((ServerWorld) this.spongeWorld()).key().formatted();
-        }
-        Context context = this.spongeWorld().context();
-        return context.toString();
+    default OfflineLocation offlineLocation(@NotNull Vector3d position) {
+        return new OfflineLocation(this, position);
     }
 }

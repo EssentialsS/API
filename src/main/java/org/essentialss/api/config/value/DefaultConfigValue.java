@@ -10,6 +10,10 @@ public interface DefaultConfigValue<T> extends ConfigValue<T> {
 
     T defaultValue();
 
+    default void setDefault(@NotNull ConfigurationNode node) throws SerializationException {
+        this.set(node, this.defaultValue());
+    }
+
     default @NotNull T parseDefault(@NotNull ConfigurationNode root) {
         T value;
         try {

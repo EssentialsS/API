@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.world.SWorldManager;
+import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCompletion;
@@ -27,20 +28,17 @@ public final class SParameters {
 
     private static final int NO_INDEX_OF_MAGIC_VALUE = -1;
 
-    private static ValueCompleter WORLD_COMPLETER = new ValueCompleter() {
-        @Override
-        public List<CommandCompletion> complete(CommandContext context, String currentInput) {
-            if (Sponge.isServerAvailable()) {
-                return Sponge
-                        .server()
-                        .worldManager()
-                        .worlds()
-                        .stream()
-                        .map(world -> CommandCompletion.of(world.key().formatted()))
-                        .collect(Collectors.toList());
-            }
-            return Collections.singletonList(CommandCompletion.of("this"));
+    private static ValueCompleter WORLD_COMPLETER = (context, currentInput) -> {
+        if (Sponge.isServerAvailable()) {
+            return Sponge
+                    .server()
+                    .worldManager()
+                    .worlds()
+                    .stream()
+                    .map(world -> CommandCompletion.of(world.key().formatted()))
+                    .collect(Collectors.toList());
         }
+        return Collections.singletonList(CommandCompletion.of("this"));
     };
 
     private static <T extends Number> List<CommandCompletion> locationSuggestion(CommandContext context,
@@ -51,6 +49,10 @@ public final class SParameters {
         return Collections.singletonList(
                 CommandCompletion.of(toNumber.apply(((Locatable) context.subject()).location()).toString(),
                                      Component.text("current location")));
+    }
+
+    public static Parameter.Value.Builder<SSpawnType> spawnType() {
+        return Parameter.enumValue(SSpawnType.class);
     }
 
     public static Parameter.Value.Builder<SWarp> warp() {

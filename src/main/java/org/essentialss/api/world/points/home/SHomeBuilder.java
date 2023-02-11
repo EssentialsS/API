@@ -1,21 +1,21 @@
 package org.essentialss.api.world.points.home;
 
+import org.essentialss.api.world.points.OfflineLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.math.vector.Vector3d;
 
 @SuppressWarnings("allow-nullable")
 public class SHomeBuilder {
 
-    private Vector3d point;
+    private OfflineLocation location;
     private String home;
 
-    public @Nullable Vector3d point() {
-        return this.point;
+    public @Nullable OfflineLocation point() {
+        return this.location;
     }
 
-    public @NotNull SHomeBuilder setPoint(@NotNull Vector3d point) {
-        this.point = point;
+    public @NotNull SHomeBuilder setPoint(@NotNull OfflineLocation point) {
+        this.location = point;
         return this;
     }
 

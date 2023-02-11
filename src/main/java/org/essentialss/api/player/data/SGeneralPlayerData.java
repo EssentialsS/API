@@ -4,7 +4,9 @@ import org.essentialss.api.player.teleport.TeleportRequest;
 import org.essentialss.api.player.teleport.TeleportRequestBuilder;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.world.SWorldData;
+import org.essentialss.api.world.points.OfflineLocation;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.server.ServerLocation;
@@ -39,6 +41,30 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
     default void teleport(@NotNull Vector3d position) {
         this.addBackTeleportLocation(this.spongePlayer().location());
         this.spongePlayer().setPosition(position);
+    }
+
+    default void teleport(OfflineLocation location) {
+        Optional<Location<?, ?>> opLoc = location.location();
+        if (!opLoc.isPresent()) {
+            throw new IllegalStateException("World has not loaded");
+        }
+        Location<?, ?> loc = opLoc.get();
+        Optional<ServerLocation> opServerLocation = loc.onServer();
+        if (opServerLocation.isPresent()) {
+            this.addBackTeleportLocation(this.spongePlayer().location());
+            this.spongePlayer().setLocation(opServerLocation.get());
+            return;
+        }
+        if (Sponge.isClientAvailable() && Sponge
+                .client()
+                .world()
+                .map(clientWorld -> clientWorld.equals(loc.world()))
+                .orElse(false)) {
+            this.addBackTeleportLocation(this.spongePlayer().location());
+            this.spongePlayer().setPosition(loc.position());
+            return;
+        }
+        throw new IllegalStateException("Cannot teleport, world has not loaded");
     }
 
     default void teleport(@NotNull Location<?, ?> location) {

@@ -5,13 +5,21 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.math.vector.Vector3d;
 
+import java.util.Optional;
+
 public interface SPoint {
 
-    @NotNull SWorldData worldData();
+    @NotNull OfflineLocation location();
 
-    @NotNull Vector3d position();
+    default @NotNull SWorldData worldData() {
+        return this.location().worldData();
+    }
 
-    default @NotNull Location<?, ?> location() {
-        return this.worldData().spongeWorld().location(this.position());
+    default @NotNull Vector3d position() {
+        return this.location().position();
+    }
+
+    default @NotNull Optional<Location<?, ?>> spongeLocation() {
+        return this.location().world().map(world -> world.location(this.position()));
     }
 }
