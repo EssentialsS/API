@@ -50,6 +50,8 @@ public interface SGeneralOfflineData extends Serializable {
 
     void register(@NotNull SHomeBuilder builder);
 
+    void deregister(@NotNull SHome home);
+
     @NotNull LinkedList<OfflineLocation> backTeleportLocations();
 
     void setBackTeleportLocations(Collection<OfflineLocation> locations);

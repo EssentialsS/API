@@ -6,7 +6,6 @@ import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.SPoint;
-import org.essentialss.api.world.points.home.SHomeBuilder;
 import org.essentialss.api.world.points.jail.SJailSpawnPoint;
 import org.essentialss.api.world.points.jail.SJailSpawnPointBuilder;
 import org.essentialss.api.world.points.spawn.SSpawnPoint;
@@ -34,19 +33,19 @@ public interface SWorldData extends StringIdentifier, Serializable {
 
     @NotNull UnmodifiableCollection<SPoint> points();
 
-    boolean register(@NotNull SHomeBuilder builder, boolean runEvent, @Nullable Cause cause);
-
     boolean register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
     boolean register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
 
     boolean register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    boolean isWorld(@NotNull World<?, ?> world);
+    boolean deregister(@NotNull SSpawnPoint builder, boolean runEvent, @Nullable Cause cause);
 
-    default boolean register(@NotNull SHomeBuilder builder, @NotNull Cause cause) {
-        return this.register(builder, true, cause);
-    }
+    boolean deregister(@NotNull SWarp builder, boolean runEvent, @Nullable Cause cause);
+
+    boolean deregister(@NotNull SJailSpawnPoint builder, boolean runEvent, @Nullable Cause cause);
+
+    boolean isWorld(@NotNull World<?, ?> world);
 
     default boolean register(@NotNull SSpawnPointBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
@@ -58,10 +57,6 @@ public interface SWorldData extends StringIdentifier, Serializable {
 
     default boolean register(@NotNull SJailSpawnPointBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
-    }
-
-    default boolean register(@NotNull SHomeBuilder builder) {
-        return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
     default boolean register(@NotNull SSpawnPointBuilder builder) {
@@ -76,6 +71,32 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
+    default boolean deregister(@NotNull SSpawnPoint builder, @NotNull Cause cause) {
+        return this.deregister(builder, true, cause);
+    }
+
+    default boolean deregister(@NotNull SWarp builder, @NotNull Cause cause) {
+        return this.deregister(builder, true, cause);
+    }
+
+    default boolean deregister(@NotNull SJailSpawnPoint builder, @NotNull Cause cause) {
+        return this.deregister(builder, true, cause);
+    }
+
+    default boolean deregister(@NotNull SSpawnPoint builder) {
+        return this.deregister(builder, true,
+                               CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean deregister(@NotNull SWarp builder) {
+        return this.deregister(builder, true,
+                               CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean deregister(@NotNull SJailSpawnPoint builder) {
+        return this.deregister(builder, true,
+                               CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
 
     default <P extends SPoint> @NotNull UnmodifiableCollection<P> pointsOf(@NotNull Class<P> type) {
         return new UnmodifiableCollection<>(this
