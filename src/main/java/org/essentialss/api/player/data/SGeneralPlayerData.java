@@ -1,5 +1,6 @@
 package org.essentialss.api.player.data;
 
+import net.kyori.adventure.text.Component;
 import org.essentialss.api.player.teleport.TeleportRequest;
 import org.essentialss.api.player.teleport.TeleportRequestBuilder;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
@@ -19,6 +20,10 @@ import java.util.UUID;
 public interface SGeneralPlayerData extends SGeneralOfflineData {
 
     @NotNull Player spongePlayer();
+
+    @NotNull Component displayName();
+
+    void setDisplayName(@NotNull Component component);
 
     @NotNull SWorldData world();
 

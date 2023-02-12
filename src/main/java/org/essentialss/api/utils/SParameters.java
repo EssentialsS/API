@@ -2,7 +2,9 @@ package org.essentialss.api.utils;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.essentialss.api.EssentialsSAPI;
+import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.world.SWorldManager;
 import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
@@ -16,13 +18,11 @@ import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.client.ClientWorld;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class SParameters {
 
@@ -53,6 +53,48 @@ public final class SParameters {
 
     public static Parameter.Value.Builder<SSpawnType> spawnType() {
         return Parameter.enumValue(SSpawnType.class);
+    }
+
+    public static Parameter.Value.Builder<SGeneralPlayerData> onlinePlayer() {
+        return Parameter.builder(SGeneralPlayerData.class)
+                //TODO -> parser
+                .completer((context, currentInput) -> {
+                    Collection<SGeneralPlayerData> playerData;
+                    if (Sponge.isServerAvailable()) {
+                        playerData = Sponge
+                                .server()
+                                .onlinePlayers()
+                                .stream()
+                                .map(player -> EssentialsSAPI.get().playerManager().get().dataFor(player))
+                                .collect(Collectors.toList());
+                    } else if (Sponge.isClientAvailable()) {
+                        playerData = Sponge
+                                .client()
+                                .player()
+                                .map(player -> Collections.singletonList(
+                                        EssentialsSAPI.get().playerManager().get().dataFor(player)))
+                                .orElse(Collections.emptyList());
+                    } else {
+                        return Collections.emptyList();
+                    }
+                    return playerData
+                            .stream()
+                            .filter(player -> {
+                                if (player.spongePlayer().name().toLowerCase().startsWith(currentInput.toLowerCase())) {
+                                    return true;
+                                }
+                                return PlainTextComponentSerializer
+                                        .plainText()
+                                        .serialize(player.displayName())
+                                        .toLowerCase()
+                                        .startsWith(currentInput.toLowerCase());
+                            })
+                            .flatMap(playerData2 -> Stream.of(CommandCompletion.of(
+                                                                      PlainTextComponentSerializer.plainText().serialize(playerData2.displayName()),
+                                                                      playerData2.displayName()),
+                                                              CommandCompletion.of(playerData2.spongePlayer().name())))
+                            .collect(Collectors.toList());
+                });
     }
 
     public static Parameter.Value.Builder<SWarp> warp() {
