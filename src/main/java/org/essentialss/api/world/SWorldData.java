@@ -1,6 +1,6 @@
 package org.essentialss.api.world;
 
-import org.essentialss.api.Serializable;
+import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;

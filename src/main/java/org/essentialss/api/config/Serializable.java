@@ -1,4 +1,4 @@
-package org.essentialss.api;
+package org.essentialss.api.config;
 
 import org.spongepowered.configurate.ConfigurateException;
 

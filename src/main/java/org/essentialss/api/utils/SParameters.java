@@ -5,22 +5,33 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.player.data.SGeneralPlayerData;
+import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.world.SWorldManager;
 import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCompletion;
+import org.spongepowered.api.command.exception.ArgumentParseException;
+import org.spongepowered.api.command.exception.CommandException;
+import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.command.parameter.managed.ValueCompleter;
+import org.spongepowered.api.command.parameter.managed.ValueParser;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.client.ClientWorld;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +52,121 @@ public final class SParameters {
         return Collections.singletonList(CommandCompletion.of("this"));
     };
 
+    private static ValueParser<String> IP_V4 = (parameterKey, reader, context) -> {
+        String original = reader.parseString();
+
+        String[] split = original.split(Pattern.quote("."));
+        if (4 != split.length) {
+            throw reader.createException(Component.text("Invalid IPV4. Too many or not enough dots"));
+        }
+
+        for (String splitNumber : split) {
+            try {
+                int number = Integer.parseInt(splitNumber);
+                if (number < 0) {
+                    throw reader.createException(
+                            Component.text("Invalid IPV4. '" + splitNumber + "' cannot be less then 0"));
+                }
+                if (number > 255) {
+                    throw reader.createException(
+                            Component.text("Invalid IPV4. '" + splitNumber + "' cannot be greater than 255"));
+                }
+            } catch (NumberFormatException e) {
+                throw reader.createException(Component.text("Invalid IPV4. '" + splitNumber + "' is not a number"));
+            }
+        }
+
+        return Optional.of(original);
+    };
+
+    private static ValueParser<String> IP_V6 = (parameterKey, reader, context) -> {
+        String original = reader.parseString();
+        Pattern ipv6Pattern = Pattern.compile("([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}", Pattern.CASE_INSENSITIVE);
+        if (!ipv6Pattern.matcher(original).matches()) {
+            throw reader.createException(Component.text("IPV6 is invalid"));
+        }
+        return Optional.of(original);
+    };
+
+    public static ValueParser<String> URL = (parameterKey, reader, context) -> {
+        String original = reader.parseString();
+        try {
+            new URI(original);
+        } catch (URISyntaxException e) {
+            throw reader.createException(Component.text(e.getMessage()));
+        }
+        return Optional.of(original);
+    };
+
+    public static ValueCompleter HOSTNAME_COMPLETER = (context, currentInput) -> {
+        if (!Sponge.isServerAvailable()) {
+            return Collections.emptyList();
+        }
+        return Sponge
+                .server()
+                .onlinePlayers()
+                .stream()
+                .map(player -> player.connection().address().getHostName())
+                .map(CommandCompletion::of)
+                .collect(Collectors.toList());
+    };
+
+    private static ValueParser<SGeneralUnloadedData> nickNameParser(Predicate<SGeneralUnloadedData> accept) {
+        return nickNameParser(() -> EssentialsSAPI.get().playerManager().get().unloadedDataForAll(), accept);
+    }
+
+    private static <T extends SGeneralUnloadedData> ValueParser<T> nickNameParser(Supplier<Collection<T>> players,
+                                                                                  Predicate<T> accept) {
+        return (parameterKey, reader, context) -> {
+            String input = reader.parseString();
+            return players.get().stream().filter(player -> {
+                if (player.playerName().equalsIgnoreCase(input)) {
+                    return true;
+                }
+                Component displayName = player.displayName();
+                String displayNamePlain = PlainTextComponentSerializer.plainText().serialize(displayName);
+
+                return displayNamePlain.equalsIgnoreCase(input);
+            }).filter(accept).findAny();
+
+        };
+    }
+
+    private static ValueCompleter nicknameSuggestion(boolean nicknameOnly, Predicate<SGeneralUnloadedData> accept) {
+        return (context, currentInput) -> {
+            Collection<SGeneralUnloadedData> playerData = EssentialsSAPI
+                    .get()
+                    .playerManager()
+                    .get()
+                    .unloadedDataForAll();
+            return playerData.stream().filter(player -> {
+                if (player.hasSetDisplayName()) {
+                    return PlainTextComponentSerializer
+                            .plainText()
+                            .serialize(player.displayName())
+                            .toLowerCase()
+                            .startsWith(currentInput.toLowerCase());
+                }
+                if (nicknameOnly) {
+                    return false;
+                }
+
+                return player.playerName().toLowerCase().startsWith(currentInput.toLowerCase());
+            }).filter(accept).flatMap(playerData2 -> {
+                CommandCompletion completion = CommandCompletion.of(
+                        PlainTextComponentSerializer.plainText().serialize(playerData2.displayName()),
+                        playerData2.displayName());
+                if (nicknameOnly) {
+                    return Stream.of(completion);
+                }
+                if (!playerData2.hasSetDisplayName()) {
+                    return Stream.of(completion);
+                }
+                return Stream.of(completion, CommandCompletion.of(playerData2.playerName()));
+            }).collect(Collectors.toList());
+        };
+    }
+
     private static <T extends Number> List<CommandCompletion> locationSuggestion(CommandContext context,
                                                                                  Function<Location<?, ?>, T> toNumber) {
         if (!(context.subject() instanceof Locatable)) {
@@ -51,50 +177,62 @@ public final class SParameters {
                                      Component.text("current location")));
     }
 
+    private static <T> ValueParser<T> combine(ValueParser<T>... parsers) {
+        return (parameterKey, reader, context) -> {
+            ArgumentParseException exception = null;
+
+            for (ValueParser<T> parser : parsers) {
+                try {
+                    return parser.parseValue(parameterKey, reader.immutable().mutable(), context);
+                } catch (ArgumentParseException e) {
+                    exception = e;
+                }
+            }
+            if (null == exception) {
+                return Optional.empty();
+            }
+            throw exception;
+        };
+    }
+
+    public static Parameter.Value.Builder<String> hostname() {
+        return Parameter.string().completer(HOSTNAME_COMPLETER).addParser(combine(IP_V4, IP_V6, URL));
+    }
+
     public static Parameter.Value.Builder<SSpawnType> spawnType() {
         return Parameter.enumValue(SSpawnType.class);
     }
 
-    public static Parameter.Value.Builder<SGeneralPlayerData> onlinePlayer() {
-        return Parameter.builder(SGeneralPlayerData.class)
-                //TODO -> parser
-                .completer((context, currentInput) -> {
-                    Collection<SGeneralPlayerData> playerData;
-                    if (Sponge.isServerAvailable()) {
-                        playerData = Sponge
-                                .server()
-                                .onlinePlayers()
-                                .stream()
-                                .map(player -> EssentialsSAPI.get().playerManager().get().dataFor(player))
-                                .collect(Collectors.toList());
-                    } else if (Sponge.isClientAvailable()) {
-                        playerData = Sponge
-                                .client()
-                                .player()
-                                .map(player -> Collections.singletonList(
-                                        EssentialsSAPI.get().playerManager().get().dataFor(player)))
-                                .orElse(Collections.emptyList());
-                    } else {
-                        return Collections.emptyList();
-                    }
-                    return playerData
-                            .stream()
-                            .filter(player -> {
-                                if (player.spongePlayer().name().toLowerCase().startsWith(currentInput.toLowerCase())) {
-                                    return true;
-                                }
-                                return PlainTextComponentSerializer
-                                        .plainText()
-                                        .serialize(player.displayName())
-                                        .toLowerCase()
-                                        .startsWith(currentInput.toLowerCase());
-                            })
-                            .flatMap(playerData2 -> Stream.of(CommandCompletion.of(
-                                                                      PlainTextComponentSerializer.plainText().serialize(playerData2.displayName()),
-                                                                      playerData2.displayName()),
-                                                              CommandCompletion.of(playerData2.spongePlayer().name())))
-                            .collect(Collectors.toList());
-                });
+    public static Parameter.Value.Builder<SGeneralUnloadedData> offlinePlayersNicknames(boolean nicknameOnly,
+                                                                                        @NotNull Predicate<SGeneralUnloadedData> accept) {
+        return Parameter
+                .builder(SGeneralUnloadedData.class)
+                .addParser(nickNameParser(accept))
+                .completer(nicknameSuggestion(nicknameOnly, accept));
+    }
+
+    public static Parameter.Value.Builder<SGeneralPlayerData> onlinePlayer(@NotNull Predicate<SGeneralPlayerData> accept) {
+        return Parameter.builder(SGeneralPlayerData.class).completer(nicknameSuggestion(false, unloaded -> {
+            if(!(unloaded instanceof SGeneralPlayerData)){
+                return false;
+            }
+            return accept.test((SGeneralPlayerData) unloaded);
+        })).addParser(nickNameParser(() -> {
+            if (Sponge.isServerAvailable()) {
+                return Sponge
+                        .server()
+                        .onlinePlayers()
+                        .stream()
+                        .map(player -> EssentialsSAPI.get().playerManager().get().dataFor(player))
+                        .collect(Collectors.toList());
+            }
+            return Sponge
+                    .client()
+                    .player()
+                    .map(player -> Collections.singletonList(
+                            EssentialsSAPI.get().playerManager().get().dataFor(player)))
+                    .orElseGet(Collections::emptyList);
+        }, accept));
     }
 
     public static Parameter.Value.Builder<SWarp> warp() {
