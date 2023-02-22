@@ -6,14 +6,16 @@ import org.essentialss.api.config.value.SingleConfigValue;
 
 public interface BanConfig extends SConfig {
 
+    SingleConfigValue.Default<Component> banMessage();
+
     SingleConfigValue.Default<BanMultiplayerScreenOptions> showBanOnMultiplayerScreen();
 
     SingleConfigValue.Default<Boolean> showFullOnMultiplayerScreen();
 
-    SingleConfigValue.Default<Component> banMessage();
-
     SingleConfigValue<Component> tempBanMessage();
 
     SingleConfigValue.Default<Boolean> useBanMessageForTempBan();
+
+    SingleConfigValue.Default<Boolean> useEssentialsSBanCommands();
 
 }

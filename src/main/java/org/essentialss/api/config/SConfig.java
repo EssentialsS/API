@@ -11,8 +11,6 @@ import java.io.File;
 
 public interface SConfig {
 
-    @NotNull File file();
-
     default @NotNull ConfigurationLoader<? extends ConfigurationNode> configurationLoader() {
         File file = this.file();
         String name = file.getName();
@@ -25,6 +23,14 @@ public interface SConfig {
         throw new RuntimeException("Unsupported filetype of " + name.substring(name.lastIndexOf(".")));
     }
 
-    void generateDefault() throws SerializationException;
+    @NotNull File file();
+
+    default void generateDefault() throws SerializationException {
+        this.file().delete();
+        this.update();
+    }
+
+    void update() throws SerializationException;
+
 
 }
