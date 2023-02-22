@@ -1,6 +1,7 @@
 package org.essentialss.api.player.data;
 
 import org.essentialss.api.message.MessageData;
+import org.essentialss.api.player.teleport.PlayerTeleportRequest;
 import org.essentialss.api.player.teleport.TeleportRequest;
 import org.essentialss.api.player.teleport.TeleportRequestBuilder;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
@@ -16,30 +17,44 @@ import org.spongepowered.math.vector.Vector3d;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public interface SGeneralPlayerData extends SGeneralOfflineData {
 
-    @NotNull Player spongePlayer();
+    PlayerTeleportRequest acceptTeleportRequest(@NotNull UUID playerId) throws IllegalStateException;
 
-    void sendMessageTo(@NotNull MessageData data);
+    default PlayerTeleportRequest acceptTeleportRequest(Player player) throws IllegalStateException {
+        return this.acceptTeleportRequest(player.uniqueId());
+    }
 
-    @NotNull SWorldData world();
+    @NotNull OptionalInt backTeleportIndex();
+
+    PlayerTeleportRequest declineTeleportRequest(@NotNull UUID playerId) throws IllegalStateException;
+
+    default PlayerTeleportRequest declineTeleportRequest(Player player) throws IllegalStateException {
+        return this.declineTeleportRequest(player.uniqueId());
+    }
 
     boolean isAwayFromKeyboard();
 
     void setAwayFromKeyboard(boolean afk);
 
-    @NotNull UnmodifiableCollection<TeleportRequest> teleportRequests();
+    default Optional<PlayerTeleportRequest> playerTeleportRequest(@NotNull UUID sender) {
+        return this.teleportRequests(PlayerTeleportRequest.class).parallelStream().filter(request -> request.sender().equals(sender)).findAny();
+    }
 
-    @NotNull OptionalInt backTeleportIndex();
+    @NotNull TeleportRequest register(@NotNull TeleportRequestBuilder builder);
+
+    @Override
+    default void releaseFromJail() {
+        this.releaseFromJail(this.world().spawnPoint(this.spongePlayer().position()).location());
+    }
+
+    void sendMessageTo(@NotNull MessageData data);
 
     void setBackTeleportIndex(int index);
 
-    void register(@NotNull TeleportRequestBuilder builder);
-
-    void decline(@NotNull TeleportRequest request);
-
-    void accept(@NotNull TeleportRequest request) throws IllegalStateException;
+    @NotNull Player spongePlayer();
 
     default void teleport(@NotNull Vector3d position) {
         this.addBackTeleportLocation(this.spongePlayer().location());
@@ -58,11 +73,7 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
             this.spongePlayer().setLocation(opServerLocation.get());
             return;
         }
-        if (Sponge.isClientAvailable() && Sponge
-                .client()
-                .world()
-                .map(clientWorld -> clientWorld.equals(loc.world()))
-                .orElse(false)) {
+        if (Sponge.isClientAvailable() && Sponge.client().world().map(clientWorld -> clientWorld.equals(loc.world())).orElse(false)) {
             this.addBackTeleportLocation(this.spongePlayer().location());
             this.spongePlayer().setPosition(loc.position());
             return;
@@ -75,10 +86,7 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
         Player player = this.spongePlayer();
         if (opServerLocation.isPresent()) {
             this.addBackTeleportLocation(player.location());
-            player.setLocation(location
-                                       .onServer()
-                                       .orElseThrow(() -> new IllegalStateException(
-                                               "Player is server player but cant create server location")));
+            player.setLocation(location.onServer().orElseThrow(() -> new IllegalStateException("Player is server player but cant create server location")));
             return;
         }
         if (location.world().equals(player.world())) {
@@ -89,13 +97,16 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
 
     }
 
-    @Override
-    default void releaseFromJail() {
-        this.releaseFromJail(this.world().spawnPoint(this.spongePlayer().position()).location());
+    @NotNull UnmodifiableCollection<TeleportRequest> teleportRequests();
+
+    default <R extends TeleportRequest> UnmodifiableCollection<R> teleportRequests(Class<R> clazz) {
+        return new UnmodifiableCollection<>(this.teleportRequests().parallelStream().filter(clazz::isInstance).map(r -> (R) r).collect(Collectors.toList()));
     }
 
     @Override
     default @NotNull UUID uuid() {
         return this.spongePlayer().uniqueId();
     }
+
+    @NotNull SWorldData world();
 }

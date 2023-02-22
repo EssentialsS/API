@@ -7,8 +7,6 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import javax.naming.ConfigurationException;
-
 public interface ConfigValue<T> {
 
     @NotNull Object[] nodes();
@@ -16,20 +14,20 @@ public interface ConfigValue<T> {
     @SuppressWarnings("allow-nullable")
     @Nullable T parse(@NotNull ConfigurationNode root) throws SerializationException;
 
-    void set(@NotNull ConfigurationNode root, @Nullable T value) throws SerializationException;
-
-    default void remove(@NotNull ConfigurationNode root) throws SerializationException {
-        this.set(root, null);
-    }
-
     @SuppressWarnings("allow-nullable")
     default @Nullable T parse(@NotNull SConfig config) throws SerializationException {
         try {
             return this.parse(config.configurationLoader().load());
-        } catch(SerializationException e){
+        } catch (SerializationException e) {
             throw e;
         } catch (ConfigurateException e) {
             throw new RuntimeException(e);
         }
     }
+
+    default void remove(@NotNull ConfigurationNode root) throws SerializationException {
+        this.set(root, null);
+    }
+
+    void set(@NotNull ConfigurationNode root, @Nullable T value) throws SerializationException;
 }

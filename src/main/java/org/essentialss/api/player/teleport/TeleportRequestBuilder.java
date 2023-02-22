@@ -74,19 +74,19 @@ public class TeleportRequestBuilder {
         return this.setValidForLength(null);
     }
 
-    public @NotNull TeleportRequestBuilder requestTo(@NotNull Player player) {
-        this.setSender(player);
-        this.to = ((player2) -> player.location());
+    public @NotNull TeleportRequestBuilder requestTowardsSender(@NotNull Player sender) {
+        this.setSender(sender);
+        this.to = ((player2) -> sender.location());
         this.validForLength = Duration.ofMinutes(1);
-        this.direction = TeleportRequestDirection.TO;
+        this.direction = TeleportRequestDirection.TOWARDS_REQUEST_SENDER;
         return this;
     }
 
-    public @NotNull TeleportRequestBuilder requestFrom(@NotNull Nameable player) {
-        this.setSender(player);
+    public @NotNull TeleportRequestBuilder requestTowardsHolder(@NotNull Nameable sender) {
+        this.setSender(sender);
         this.to = ((player2) -> player2.spongePlayer().location());
         this.validForLength = Duration.ofMinutes(1);
-        this.direction = TeleportRequestDirection.FROM;
+        this.direction = TeleportRequestDirection.TOWARDS_REQUEST_HOLDER;
         return this;
     }
 }

@@ -25,19 +25,7 @@ import java.util.stream.Collectors;
 
 public interface SWorldData extends StringIdentifier, Serializable {
 
-    @NotNull Optional<World<?, ?>> spongeWorld();
-
-    Optional<ResourceKey> worldKey();
-
     void clearPoints();
-
-    @NotNull UnmodifiableCollection<SPoint> points();
-
-    boolean register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
-
-    boolean register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
-
-    boolean register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
     boolean deregister(@NotNull SSpawnPoint builder, boolean runEvent, @Nullable Cause cause);
 
@@ -45,7 +33,68 @@ public interface SWorldData extends StringIdentifier, Serializable {
 
     boolean deregister(@NotNull SJailSpawnPoint builder, boolean runEvent, @Nullable Cause cause);
 
+    default boolean deregister(@NotNull SSpawnPoint builder, @NotNull Cause cause) {
+        return this.deregister(builder, true, cause);
+    }
+
+    default boolean deregister(@NotNull SWarp builder, @NotNull Cause cause) {
+        return this.deregister(builder, true, cause);
+    }
+
+    default boolean deregister(@NotNull SJailSpawnPoint builder, @NotNull Cause cause) {
+        return this.deregister(builder, true, cause);
+    }
+
+    default boolean deregister(@NotNull SSpawnPoint builder) {
+        return this.deregister(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean deregister(@NotNull SWarp builder) {
+        return this.deregister(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
+    default boolean deregister(@NotNull SJailSpawnPoint builder) {
+        return this.deregister(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
+    }
+
     boolean isWorld(@NotNull World<?, ?> world);
+
+    default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull String identifier) {
+        return this.jailPositions().parallelStream().filter(jail -> jail.identifier().equalsIgnoreCase(identifier)).findAny();
+    }
+
+    default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull Vector3d blockPosition) {
+        double distance = Integer.MAX_VALUE;
+        SJailSpawnPoint point = null;
+        for (SJailSpawnPoint jail : this.jailPositions()) {
+            double jailDistance = jail.position().distanceSquared(blockPosition);
+            if (jailDistance < distance) {
+                point = jail;
+                distance = jailDistance;
+            }
+        }
+        return Optional.ofNullable(point);
+    }
+
+    default @NotNull UnmodifiableCollection<SJailSpawnPoint> jailPositions() {
+        return new UnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
+    }
+
+    default OfflineLocation offlineLocation(@NotNull Vector3d position) {
+        return new OfflineLocation(this, position);
+    }
+
+    @NotNull UnmodifiableCollection<SPoint> points();
+
+    default <P extends SPoint> @NotNull UnmodifiableCollection<P> pointsOf(@NotNull Class<P> type) {
+        return new UnmodifiableCollection<>(this.points().parallelStream().filter(type::isInstance).map(point -> (P) point).collect(Collectors.toSet()));
+    }
+
+    boolean register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
+
+    boolean register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
+
+    boolean register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
     default boolean register(@NotNull SSpawnPointBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
@@ -71,71 +120,6 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
-    default boolean deregister(@NotNull SSpawnPoint builder, @NotNull Cause cause) {
-        return this.deregister(builder, true, cause);
-    }
-
-    default boolean deregister(@NotNull SWarp builder, @NotNull Cause cause) {
-        return this.deregister(builder, true, cause);
-    }
-
-    default boolean deregister(@NotNull SJailSpawnPoint builder, @NotNull Cause cause) {
-        return this.deregister(builder, true, cause);
-    }
-
-    default boolean deregister(@NotNull SSpawnPoint builder) {
-        return this.deregister(builder, true,
-                               CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
-    }
-
-    default boolean deregister(@NotNull SWarp builder) {
-        return this.deregister(builder, true,
-                               CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
-    }
-
-    default boolean deregister(@NotNull SJailSpawnPoint builder) {
-        return this.deregister(builder, true,
-                               CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
-    }
-
-    default <P extends SPoint> @NotNull UnmodifiableCollection<P> pointsOf(@NotNull Class<P> type) {
-        return new UnmodifiableCollection<>(this
-                                                    .points()
-                                                    .parallelStream()
-                                                    .filter(type::isInstance)
-                                                    .map(point -> (P) point)
-                                                    .collect(Collectors.toSet()));
-    }
-
-    default @NotNull UnmodifiableCollection<SJailSpawnPoint> jailPositions() {
-        return new UnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
-    }
-
-    default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull String identifier) {
-        return this
-                .jailPositions()
-                .parallelStream()
-                .filter(jail -> jail.identifier().equalsIgnoreCase(identifier))
-                .findAny();
-    }
-
-    default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull Vector3d blockPosition) {
-        double distance = Integer.MAX_VALUE;
-        SJailSpawnPoint point = null;
-        for (SJailSpawnPoint jail : this.jailPositions()) {
-            double jailDistance = jail.position().distanceSquared(blockPosition);
-            if (jailDistance < distance) {
-                point = jail;
-                distance = jailDistance;
-            }
-        }
-        return Optional.ofNullable(point);
-    }
-
-    default @NotNull UnmodifiableCollection<SSpawnPoint> spawnPoints() {
-        return new UnmodifiableCollection<>(this.pointsOf(SSpawnPoint.class));
-    }
-
     default @NotNull SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition) {
         return this.spawnPoint(blockPosition, true);
     }
@@ -144,7 +128,7 @@ public interface SWorldData extends StringIdentifier, Serializable {
         double distance = Integer.MAX_VALUE;
         SSpawnPoint point = null;
         for (SSpawnPoint spawn : this.spawnPoints()) {
-            if (ignoreFirstLogin && (spawn.types().size() == 1) && spawn.types().contains(SSpawnType.FIRST_LOGIN)) {
+            if (ignoreFirstLogin && (1 == spawn.types().size()) && spawn.types().contains(SSpawnType.FIRST_LOGIN)) {
                 continue;
             }
             double jailDistance = spawn.position().distanceSquared(blockPosition);
@@ -159,15 +143,19 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return point;
     }
 
-    default @NotNull UnmodifiableCollection<SWarp> warps() {
-        return new UnmodifiableCollection<>(this.pointsOf(SWarp.class));
+    default @NotNull UnmodifiableCollection<SSpawnPoint> spawnPoints() {
+        return new UnmodifiableCollection<>(this.pointsOf(SSpawnPoint.class));
     }
+
+    @NotNull Optional<World<?, ?>> spongeWorld();
 
     default Optional<SWarp> warp(@NotNull String identifier) {
         return this.warps().parallelStream().filter(warp -> warp.identifier().equalsIgnoreCase(identifier)).findAny();
     }
 
-    default OfflineLocation offlineLocation(@NotNull Vector3d position) {
-        return new OfflineLocation(this, position);
+    default @NotNull UnmodifiableCollection<SWarp> warps() {
+        return new UnmodifiableCollection<>(this.pointsOf(SWarp.class));
     }
+
+    Optional<ResourceKey> worldKey();
 }

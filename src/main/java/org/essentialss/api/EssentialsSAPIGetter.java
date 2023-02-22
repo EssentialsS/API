@@ -3,17 +3,17 @@ package org.essentialss.api;
 import org.essentialss.api.utils.Singleton;
 import org.spongepowered.api.Sponge;
 
-import java.lang.reflect.InvocationTargetException;
+final class EssentialsSAPIGetter {
 
-public class EssentialsSAPIGetter {
+    private static final String THIS_PLUGIN_ID = "essentials-s";
 
-    static final String THIS_PLUGIN_ID = "essentials-s";
+    static final Singleton<EssentialsSAPI> API = new Singleton<>(() -> (EssentialsSAPI) Sponge
+            .pluginManager()
+            .plugin(THIS_PLUGIN_ID)
+            .orElseThrow(() -> new RuntimeException("Cannot find plugin with id of " + THIS_PLUGIN_ID))
+            .instance());
 
-    static final Singleton<EssentialsSAPI> API = new Singleton<>(() -> {
-        return (EssentialsSAPI) Sponge
-                .pluginManager()
-                .plugin(THIS_PLUGIN_ID)
-                .orElseThrow(() -> new RuntimeException("Cannot find plugin with id of " + THIS_PLUGIN_ID))
-                .instance();
-    });
+    private EssentialsSAPIGetter() {
+        throw new RuntimeException("Should not create");
+    }
 }

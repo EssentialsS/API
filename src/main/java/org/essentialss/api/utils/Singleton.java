@@ -1,24 +1,27 @@
 package org.essentialss.api.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.Supplier;
 
 public class Singleton<T> {
 
-    private T cached;
-    private final Supplier<T> getter;
+    private final @NotNull Supplier<T> getter;
+    private @Nullable T cached;
 
-    public Singleton(Supplier<T> getter) {
+    public Singleton(@NotNull Supplier<T> getter) {
         this.getter = getter;
     }
 
-    public T get() {
-        if (null == cached) {
+    public @NotNull T get() {
+        if (null == this.cached) {
             return this.runGetter();
         }
         return this.cached;
     }
 
-    private synchronized T runGetter() {
+    private synchronized @NotNull T runGetter() {
         if (null != this.cached) {
             return this.cached;
         }

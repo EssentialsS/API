@@ -1,12 +1,14 @@
 package org.essentialss.api.utils;
 
-import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Engine;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.scheduler.Scheduler;
 
-public class CrossSpongePlatformUtils {
+public final class CrossSpongePlatformUtils {
+
+    private CrossSpongePlatformUtils() {
+        throw new RuntimeException("Should not create");
+    }
 
     public static @NotNull Engine spongeEngine() {
         if (Sponge.isServerAvailable()) {

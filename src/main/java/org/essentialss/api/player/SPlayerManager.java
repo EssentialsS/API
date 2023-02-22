@@ -12,10 +12,7 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.user.UserManager;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -27,6 +24,13 @@ public interface SPlayerManager {
     @NotNull SGeneralOfflineData dataFor(@NotNull User user);
 
     @NotNull SGeneralUnloadedData dataFor(@NotNull GameProfile profile);
+
+    default Optional<SGeneralUnloadedData> dataFor(@NotNull UUID uuid) {
+        if (!Sponge.isServerAvailable()) {
+            return Optional.empty();
+        }
+        return Sponge.server().gameProfileManager().cache().findById(uuid).map(this::dataFor);
+    }
 
     default UnmodifiableCollection<SGeneralUnloadedData> unloadedDataForAll() {
         if (!Sponge.isServerAvailable()) {

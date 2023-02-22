@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class MessageData {
 
     private final @NotNull Component message;
-    private @NotNull MessageType type = MessageType.CHAT;
+    private final @NotNull MessageType type = MessageType.CHAT;
 
 
     public MessageData(@NotNull Component message) {
