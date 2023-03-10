@@ -1,5 +1,6 @@
-package org.essentialss.api.config;
+package org.essentialss.api.config.configs;
 
+import org.essentialss.api.config.SConfig;
 import org.essentialss.api.config.value.SingleConfigValue;
 
 public interface GeneralConfig extends SConfig {

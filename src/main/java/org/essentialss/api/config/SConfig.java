@@ -1,6 +1,8 @@
 package org.essentialss.api.config;
 
+import org.essentialss.api.utils.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
@@ -8,6 +10,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
+import java.util.function.Supplier;
 
 public interface SConfig {
 
@@ -25,12 +28,24 @@ public interface SConfig {
 
     @NotNull File file();
 
-    default void generateDefault() throws SerializationException {
+    default void generateDefault() throws SerializationException, ConfigurateException {
         this.file().delete();
         this.update();
     }
 
-    void update() throws SerializationException;
+    void update() throws SerializationException, ConfigurateException;
+
+    static <C extends SConfig> Singleton<C> singletonLoad(Supplier<C> supplier) {
+        return new Singleton<>(() -> {
+            C config = supplier.get();
+            try {
+                config.update();
+            } catch (ConfigurateException e) {
+                e.printStackTrace();
+            }
+            return config;
+        });
+    }
 
 
 }

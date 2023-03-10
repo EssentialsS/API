@@ -4,6 +4,8 @@ import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.player.data.SGeneralOfflineData;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
+import org.essentialss.api.player.data.module.load.ModuleLoader;
+import org.essentialss.api.utils.arrays.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
@@ -19,7 +21,19 @@ import java.util.stream.Collectors;
 
 public interface SPlayerManager {
 
-    @NotNull SGeneralPlayerData dataFor(@NotNull Player player);
+    default UnmodifiableCollection<SGeneralPlayerData> allPlayerData() {
+        if (!Sponge.isServerAvailable()) {
+            if (Sponge.isClientAvailable()) {
+                return Sponge
+                        .client()
+                        .player()
+                        .map(player -> new SingleUnmodifiableCollection<>(Collections.singleton(this.dataFor(player))))
+                        .orElseGet(() -> new SingleUnmodifiableCollection<>(Collections.emptyList()));
+            }
+            return new SingleUnmodifiableCollection<>(Collections.emptyList());
+        }
+        return new SingleUnmodifiableCollection<>(Sponge.server().onlinePlayers().stream().map(this::dataFor).collect(Collectors.toList()));
+    }
 
     @NotNull SGeneralOfflineData dataFor(@NotNull User user);
 
@@ -32,18 +46,24 @@ public interface SPlayerManager {
         return Sponge.server().gameProfileManager().cache().findById(uuid).map(this::dataFor);
     }
 
+    @NotNull SGeneralPlayerData dataFor(@NotNull Player player);
+
+    @NotNull Collection<ModuleLoader<?, ?>> dataLoaders();
+
+    void register(@NotNull ModuleLoader<?, ?> loader);
+
     default UnmodifiableCollection<SGeneralUnloadedData> unloadedDataForAll() {
         if (!Sponge.isServerAvailable()) {
-            return new UnmodifiableCollection<>(Collections.emptyList());
+            return new SingleUnmodifiableCollection<>(Collections.emptyList());
         }
         UserManager manager = Sponge.server().userManager();
-        return new UnmodifiableCollection<>(manager.streamAll().map(this::dataFor).collect(Collectors.toList()));
+        return new SingleUnmodifiableCollection<>(manager.streamAll().map(this::dataFor).collect(Collectors.toList()));
     }
 
     default CompletableFuture<UnmodifiableCollection<SGeneralOfflineData>> userDataForAll() {
         if (!Sponge.isServerAvailable()) {
             CompletableFuture<UnmodifiableCollection<SGeneralOfflineData>> future = new CompletableFuture<>();
-            future.complete(new UnmodifiableCollection<>(Collections.emptyList()));
+            future.complete(new SingleUnmodifiableCollection<>(Collections.emptyList()));
             return future;
         }
         UserManager manager = Sponge.server().userManager();
@@ -61,16 +81,14 @@ public interface SPlayerManager {
                     continue;
                 }
                 User user = opUser.get();
-                Optional<SGeneralPlayerData> opPlayerData = user
-                        .player()
-                        .map(player -> EssentialsSAPI.get().playerManager().get().dataFor(player));
+                Optional<SGeneralPlayerData> opPlayerData = user.player().map(player -> EssentialsSAPI.get().playerManager().get().dataFor(player));
 
                 SGeneralOfflineData userData = opPlayerData
                         .map(playerData -> (SGeneralOfflineData) playerData)
                         .orElseGet(() -> EssentialsSAPI.get().playerManager().get().dataFor(user));
                 ret.add(userData);
             }
-            return new UnmodifiableCollection<>(ret);
+            return new SingleUnmodifiableCollection<>(ret);
         });
     }
 

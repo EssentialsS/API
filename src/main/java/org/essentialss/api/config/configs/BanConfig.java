@@ -1,7 +1,8 @@
-package org.essentialss.api.config;
+package org.essentialss.api.config.configs;
 
 import net.kyori.adventure.text.Component;
 import org.essentialss.api.ban.BanMultiplayerScreenOptions;
+import org.essentialss.api.config.SConfig;
 import org.essentialss.api.config.value.SingleConfigValue;
 
 public interface BanConfig extends SConfig {

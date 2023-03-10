@@ -2,6 +2,7 @@ package org.essentialss.api.world;
 
 import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
+import org.essentialss.api.utils.arrays.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.OfflineLocation;
@@ -77,7 +78,7 @@ public interface SWorldData extends StringIdentifier, Serializable {
     }
 
     default @NotNull UnmodifiableCollection<SJailSpawnPoint> jailPositions() {
-        return new UnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
+        return new SingleUnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
     }
 
     default OfflineLocation offlineLocation(@NotNull Vector3d position) {
@@ -87,7 +88,7 @@ public interface SWorldData extends StringIdentifier, Serializable {
     @NotNull UnmodifiableCollection<SPoint> points();
 
     default <P extends SPoint> @NotNull UnmodifiableCollection<P> pointsOf(@NotNull Class<P> type) {
-        return new UnmodifiableCollection<>(this.points().parallelStream().filter(type::isInstance).map(point -> (P) point).collect(Collectors.toSet()));
+        return new SingleUnmodifiableCollection<>(this.points().parallelStream().filter(type::isInstance).map(point -> (P) point).collect(Collectors.toSet()));
     }
 
     boolean register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
@@ -144,7 +145,7 @@ public interface SWorldData extends StringIdentifier, Serializable {
     }
 
     default @NotNull UnmodifiableCollection<SSpawnPoint> spawnPoints() {
-        return new UnmodifiableCollection<>(this.pointsOf(SSpawnPoint.class));
+        return new SingleUnmodifiableCollection<>(this.pointsOf(SSpawnPoint.class));
     }
 
     @NotNull Optional<World<?, ?>> spongeWorld();
@@ -154,7 +155,7 @@ public interface SWorldData extends StringIdentifier, Serializable {
     }
 
     default @NotNull UnmodifiableCollection<SWarp> warps() {
-        return new UnmodifiableCollection<>(this.pointsOf(SWarp.class));
+        return new SingleUnmodifiableCollection<>(this.pointsOf(SWarp.class));
     }
 
     Optional<ResourceKey> worldKey();

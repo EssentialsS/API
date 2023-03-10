@@ -4,6 +4,9 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.essentialss.api.EssentialsSAPI;
+import org.essentialss.api.config.value.ConfigValue;
+import org.essentialss.api.config.value.ConfigValueWrapper;
+import org.essentialss.api.message.placeholder.MessageAdapter;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.world.SWorldManager;
@@ -146,6 +149,27 @@ public final class SParameters {
         });
     }
 
+    public static Parameter.Value.Builder<ConfigValueWrapper> configValue(Supplier<Collection<ConfigValue<?>>> values) {
+        return Parameter
+                .builder(ConfigValueWrapper.class)
+                .addParser((parameterKey, reader, context) -> {
+                    String value = reader.parseUnquotedString();
+                    Collection<ConfigValue<?>> configValues = values.get();
+                    return configValues
+                            .stream()
+                            .filter(node -> Arrays.stream(node.nodes()).map(Object::toString).collect(Collectors.joining(".")).equalsIgnoreCase(value))
+                            .findAny()
+                            .map(ConfigValueWrapper::new);
+                })
+                .completer((context, currentInput) -> values
+                        .get()
+                        .stream()
+                        .map(v -> Arrays.stream(v.nodes()).map(Object::toString).collect(Collectors.joining(".")))
+                        .sorted(Comparator.naturalOrder())
+                        .map(CommandCompletion::of)
+                        .collect(Collectors.toList()));
+    }
+
     public static Parameter.Value.Builder<String> hostname() {
         return Parameter.string().completer(HOSTNAME_COMPLETER).addParser(combine(IP_V4, IP_V6, URL));
     }
@@ -168,6 +192,29 @@ public final class SParameters {
         }
         return Collections.singletonList(
                 CommandCompletion.of(toNumber.apply(((Locatable) context.subject()).location()).toString(), Component.text("current location")));
+    }
+
+    public static Parameter.Value.Builder<MessageAdapter> messageAdapter() {
+        List<MessageAdapter> adapters = EssentialsSAPI.get().messageManager().get().adapters().all().collect(Collectors.toList());
+        return Parameter
+                .builder(MessageAdapter.class)
+                .addParser((parameterKey, reader, context) -> {
+                    String value = reader.parseUnquotedString();
+                    return adapters
+                            .stream()
+                            .filter(adapter -> Arrays
+                                    .stream(adapter.configValue().nodes())
+                                    .map(Object::toString)
+                                    .collect(Collectors.joining("."))
+                                    .equalsIgnoreCase(value))
+                            .findAny();
+                })
+                .completer((context, currentInput) -> adapters
+                        .stream()
+                        .map(adapter -> Arrays.stream(adapter.configValue().nodes()).map(Object::toString).collect(Collectors.joining(".")))
+                        .sorted(Comparator.naturalOrder())
+                        .map(CommandCompletion::of)
+                        .collect(Collectors.toList()));
     }
 
     private static ValueParser<SGeneralUnloadedData> nickNameParser(@NotNull Predicate<SGeneralUnloadedData> accept) {
