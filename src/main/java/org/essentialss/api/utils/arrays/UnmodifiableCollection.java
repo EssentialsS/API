@@ -3,8 +3,6 @@ package org.essentialss.api.utils.arrays;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 
 public interface UnmodifiableCollection<T> extends Collection<T> {
 

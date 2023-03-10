@@ -11,13 +11,13 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SPlaceHolders {
+public final class SPlaceHolders {
 
     public static final NicknamePlaceholder PLAYER_NICKNAME = new NicknamePlaceholder();
     public static final NamePlaceholder PLAYER_NAME = new NamePlaceholder();
     public static final DurationPlaceholder DURATION = new DurationPlaceholder();
 
-    private static final Singleton<Collection<SPlaceHolder<?>>> DEFAULT_PLACEHOLDERS = new Singleton<Collection<SPlaceHolder<?>>>(() -> Arrays
+    private static final Singleton<Collection<SPlaceHolder<?>>> DEFAULT_PLACEHOLDERS = new Singleton<>(() -> Arrays
             .stream(SPlaceHolders.class.getDeclaredFields())
             .filter(field -> Modifier.isPublic(field.getModifiers()))
             .filter(field -> Modifier.isStatic(field.getModifiers()))
@@ -33,6 +33,10 @@ public class SPlaceHolders {
             })
             .filter(Objects::nonNull)
             .collect(Collectors.toSet()));
+
+    private SPlaceHolders() {
+        throw new RuntimeException("Cannot run");
+    }
 
     public static Collection<SPlaceHolder<?>> defaultValues() {
         return DEFAULT_PLACEHOLDERS.get();

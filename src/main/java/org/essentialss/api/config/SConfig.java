@@ -6,7 +6,6 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
-import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -28,12 +27,12 @@ public interface SConfig {
 
     @NotNull File file();
 
-    default void generateDefault() throws SerializationException, ConfigurateException {
+    default void generateDefault() throws ConfigurateException {
         this.file().delete();
         this.update();
     }
 
-    void update() throws SerializationException, ConfigurateException;
+    void update() throws ConfigurateException;
 
     static <C extends SConfig> Singleton<C> singletonLoad(Supplier<C> supplier) {
         return new Singleton<>(() -> {

@@ -7,9 +7,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class SPlayerModifiers {
+public final class SPlayerModifiers {
 
     public static final SPlayerModifier<Boolean> VISIBILITY = new SPlayerModifierImpl<>("visibility", Keys.IS_INVISIBLE);
+
+    private SPlayerModifiers() {
+        throw new RuntimeException("Cannot run");
+    }
 
     public static Collection<SPlayerModifier<?>> all() {
         return Arrays

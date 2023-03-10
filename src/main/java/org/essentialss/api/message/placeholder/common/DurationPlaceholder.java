@@ -51,6 +51,6 @@ public class DurationPlaceholder implements SPlaceHolder<Duration> {
     }
 
     public @NotNull SPlaceHolder<Duration> copyWithTagType(@NotNull String placeholderTag, @NotNull String placeholderType) {
-        return copyWithTagType(placeholderTag, placeholderType);
+        return this.copyWithTagType(placeholderTag, placeholderType);
     }
 }
