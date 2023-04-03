@@ -1,7 +1,6 @@
 package org.essentialss.api.message.placeholder;
 
 import org.essentialss.api.message.MuteType;
-import org.essentialss.api.message.adapters.player.command.PingMessageAdapter;
 import org.essentialss.api.message.placeholder.common.DurationPlaceholder;
 import org.essentialss.api.message.placeholder.common.player.NamePlaceholder;
 import org.essentialss.api.message.placeholder.common.player.NicknamePlaceholder;
@@ -31,6 +30,7 @@ public final class SPlaceHolders {
     public static final EnumPlaceholder<MuteType> MUTE_TYPE = new EnumPlaceholder<>("mute", "type", MuteType.class);
     public static final PingPlaceholder PLAYER_PING = new PingPlaceholder();
 
+    @SuppressWarnings("ReturnOfNull")
     private static final Singleton<Collection<SPlaceHolder<?>>> DEFAULT_PLACEHOLDERS = new Singleton<>(() -> Arrays
             .stream(SPlaceHolders.class.getDeclaredFields())
             .filter(field -> Modifier.isPublic(field.getModifiers()))

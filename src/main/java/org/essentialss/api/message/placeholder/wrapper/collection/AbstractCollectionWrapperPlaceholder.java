@@ -3,6 +3,7 @@ package org.essentialss.api.message.placeholder.wrapper.collection;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
+import org.essentialss.api.utils.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +30,7 @@ public abstract class AbstractCollectionWrapperPlaceholder<T> implements SPlaceH
         for (int index = 0; index < valueList.size(); index++) {
             T value = valueList.get(index);
             Component applied = this.placeHolder.apply(Component.text(this.placeHolder.formattedPlaceholderTag()), value);
-            if (index == 0) {
+            if (Constants.ZERO == index) {
                 mix = applied;
                 continue;
             }
