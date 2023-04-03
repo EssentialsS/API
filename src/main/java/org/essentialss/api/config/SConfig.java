@@ -1,5 +1,6 @@
 package org.essentialss.api.config;
 
+import org.essentialss.api.config.value.ConfigValue;
 import org.essentialss.api.utils.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -9,9 +10,12 @@ import org.spongepowered.configurate.loader.ConfigurationLoader;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 public interface SConfig {
+
+    @NotNull Collection<ConfigValue<?>> expectedNodes();
 
     default @NotNull ConfigurationLoader<? extends ConfigurationNode> configurationLoader() {
         File file = this.file();

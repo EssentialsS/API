@@ -6,9 +6,10 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.config.value.ConfigValue;
 import org.essentialss.api.config.value.ConfigValueWrapper;
-import org.essentialss.api.message.placeholder.MessageAdapter;
+import org.essentialss.api.message.adapters.MessageAdapter;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
+import org.essentialss.api.utils.parameter.ParameterAdapter;
 import org.essentialss.api.world.SWorldManager;
 import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
@@ -195,7 +196,11 @@ public final class SParameters {
     }
 
     public static Parameter.Value.Builder<MessageAdapter> messageAdapter() {
-        List<MessageAdapter> adapters = EssentialsSAPI.get().messageManager().get().adapters().all().collect(Collectors.toList());
+        return messageAdapter(() -> EssentialsSAPI.get().messageManager().get().adapters().all().collect(Collectors.toList()));
+    }
+
+    public static Parameter.Value.Builder<MessageAdapter> messageAdapter(@NotNull Supplier<Collection<MessageAdapter>> supplier) {
+        Collection<MessageAdapter> adapters = supplier.get();
         return Parameter
                 .builder(MessageAdapter.class)
                 .addParser((parameterKey, reader, context) -> {
@@ -300,6 +305,16 @@ public final class SParameters {
                     .map(player -> Collections.singletonList(EssentialsSAPI.get().playerManager().get().dataFor(player)))
                     .orElseGet(Collections::emptyList);
         }, accept));
+    }
+
+    public static <T> Optional<Parameter.Value.Builder<T>> parameterFor(@NotNull Class<?> type) {
+        return EssentialsSAPI
+                .get()
+                .parameterAdapters()
+                .stream()
+                .filter(adapter -> Arrays.stream(adapter.types()).anyMatch(type2 -> type2.isAssignableFrom(type)))
+                .findAny()
+                .map(ParameterAdapter::builder);
     }
 
     public static Parameter.Value.Builder<SSpawnType> spawnType() {

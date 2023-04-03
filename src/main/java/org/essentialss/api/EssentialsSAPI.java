@@ -5,9 +5,12 @@ import org.essentialss.api.config.SConfigManager;
 import org.essentialss.api.message.MessageManager;
 import org.essentialss.api.player.SPlayerManager;
 import org.essentialss.api.utils.Singleton;
+import org.essentialss.api.utils.parameter.ParameterAdapter;
 import org.essentialss.api.world.SWorldManager;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.plugin.PluginContainer;
+
+import java.util.Collection;
 
 public interface EssentialsSAPI {
 
@@ -18,6 +21,8 @@ public interface EssentialsSAPI {
     @NotNull PluginContainer container();
 
     @NotNull Singleton<MessageManager> messageManager();
+
+    @NotNull Collection<ParameterAdapter> parameterAdapters();
 
     @NotNull Singleton<SPlayerManager> playerManager();
 

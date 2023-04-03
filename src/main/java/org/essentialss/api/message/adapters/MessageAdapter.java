@@ -1,9 +1,10 @@
-package org.essentialss.api.message.placeholder;
+package org.essentialss.api.message.adapters;
 
 import net.kyori.adventure.text.Component;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.config.configs.MessageConfig;
 import org.essentialss.api.config.value.SingleConfigValue;
+import org.essentialss.api.message.placeholder.SPlaceHolder;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;

@@ -12,13 +12,15 @@ public class NicknamePlaceholder implements SPlaceHolder<SGeneralUnloadedData> {
     public static final String TAG_TYPE = "player";
 
     private final @NotNull String tag;
+    private final @NotNull String name;
 
     public NicknamePlaceholder() {
-        this(TAG_TYPE);
+        this(TAG_TYPE, TAG_NAME);
     }
 
-    public NicknamePlaceholder(@NotNull String tag) {
+    public NicknamePlaceholder(@NotNull String tag, @NotNull String name) {
         this.tag = tag;
+        this.name = name;
     }
 
     @Override
@@ -27,13 +29,13 @@ public class NicknamePlaceholder implements SPlaceHolder<SGeneralUnloadedData> {
     }
 
     @Override
-    public @NotNull SPlaceHolder<SGeneralUnloadedData> copyWithTagType(@NotNull String placeholderTag) {
-        return new NicknamePlaceholder(placeholderTag);
+    public @NotNull SPlaceHolder<SGeneralUnloadedData> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
+        return new NicknamePlaceholder(placeholderTag, placeholderName);
     }
 
     @Override
     public @NotNull String placeholderTagName() {
-        return TAG_NAME;
+        return this.name;
     }
 
     @Override

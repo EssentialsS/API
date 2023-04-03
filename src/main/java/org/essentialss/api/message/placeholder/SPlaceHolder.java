@@ -12,7 +12,15 @@ public interface SPlaceHolder<T> {
         return PlainTextComponentSerializer.plainText().serialize(component).contains(this.formattedPlaceholderTag());
     }
 
-    @NotNull SPlaceHolder<T> copyWithTagType(@NotNull String placeholderTag);
+    @NotNull SPlaceHolder<T> copy(@NotNull String placeholderTag, @NotNull String placeholderName);
+
+    default @NotNull SPlaceHolder<T> copyWithTagName(@NotNull String placeholderName) {
+        return this.copy(this.placeholderTag(), placeholderName);
+    }
+
+    default @NotNull SPlaceHolder<T> copyWithTagType(@NotNull String placeholderTag) {
+        return this.copy(placeholderTag, this.placeholderTagName());
+    }
 
     default String formattedPlaceholderTag() {
         return "%" + this.placeholderTag() + "%";
@@ -26,6 +34,7 @@ public interface SPlaceHolder<T> {
 
     @NotNull String placeholderTagType();
 
-    @NotNull Class<T> type();
+    @NotNull Class<?> type();
+
 
 }

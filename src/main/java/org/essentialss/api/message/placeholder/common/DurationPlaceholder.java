@@ -3,7 +3,7 @@ package org.essentialss.api.message.placeholder.common;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
-import org.essentialss.api.utils.FriendlyString;
+import org.essentialss.api.utils.friendly.FriendlyStrings;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -27,12 +27,13 @@ public class DurationPlaceholder implements SPlaceHolder<Duration> {
 
     @Override
     public @NotNull Component apply(@NotNull Component message, @NotNull Duration value) {
-        return message.replaceText(TextReplacementConfig.builder().match(this.formattedPlaceholderTag()).replacement(FriendlyString.toString(value)).build());
+        return message.replaceText(
+                TextReplacementConfig.builder().match(this.formattedPlaceholderTag()).replacement(FriendlyStrings.DURATION.toFriendlyString(value)).build());
     }
 
     @Override
-    public @NotNull SPlaceHolder<Duration> copyWithTagType(@NotNull String placeholderTag) {
-        return this.copyWithTagType(placeholderTag, this.type);
+    public @NotNull SPlaceHolder<Duration> copy(@NotNull String placeholderTag, @NotNull String placeholderType) {
+        return new DurationPlaceholder(placeholderTag, placeholderType);
     }
 
     @Override
@@ -48,9 +49,5 @@ public class DurationPlaceholder implements SPlaceHolder<Duration> {
     @Override
     public @NotNull Class<Duration> type() {
         return Duration.class;
-    }
-
-    public @NotNull SPlaceHolder<Duration> copyWithTagType(@NotNull String placeholderTag, @NotNull String placeholderType) {
-        return this.copyWithTagType(placeholderTag, placeholderType);
     }
 }

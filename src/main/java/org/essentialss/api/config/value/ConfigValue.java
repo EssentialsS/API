@@ -30,4 +30,6 @@ public interface ConfigValue<T> {
     }
 
     void set(@NotNull ConfigurationNode root, @Nullable T value) throws SerializationException;
+
+    @NotNull Class<?> type();
 }

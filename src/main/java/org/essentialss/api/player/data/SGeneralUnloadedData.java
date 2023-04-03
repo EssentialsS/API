@@ -2,6 +2,7 @@ package org.essentialss.api.player.data;
 
 import net.kyori.adventure.text.Component;
 import org.essentialss.api.config.Serializable;
+import org.essentialss.api.message.MuteType;
 import org.essentialss.api.player.data.module.ModuleData;
 import org.essentialss.api.player.data.module.SerializableModuleData;
 import org.essentialss.api.player.mail.MailMessage;
@@ -64,6 +65,8 @@ public interface SGeneralUnloadedData extends Serializable {
 
     @NotNull UnmodifiableCollection<MailMessage> mailMessages();
 
+    @NotNull UnmodifiableCollection<MuteType> muteTypes();
+
     @NotNull String playerName();
 
     default Optional<GameProfile> profile() {
@@ -91,6 +94,10 @@ public interface SGeneralUnloadedData extends Serializable {
 
     void removeMessage(@NotNull MailMessage message);
 
+    default void removeMuteTypes() {
+        this.setMuteTypes();
+    }
+
     void setBackTeleportLocations(Collection<OfflineLocation> locations);
 
     void setCanLooseItemsWhenUsed(boolean check);
@@ -98,6 +105,12 @@ public interface SGeneralUnloadedData extends Serializable {
     void setDisplayName(@Nullable Component component);
 
     void setHomes(@NotNull Collection<SHomeBuilder> homes);
+
+    void setMuteTypes(@NotNull MuteType... types);
+
+    default void setMuted() {
+        this.setMuteTypes(MuteType.values());
+    }
 
     void setPreventTeleportRequests(boolean prevent);
 

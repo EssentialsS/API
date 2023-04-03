@@ -91,33 +91,33 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return new SingleUnmodifiableCollection<>(this.points().parallelStream().filter(type::isInstance).map(point -> (P) point).collect(Collectors.toSet()));
     }
 
-    boolean register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
+    Optional<SSpawnPoint> register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    boolean register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
+    Optional<SWarp> register(@NotNull SWarpBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    boolean register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
+    Optional<SJailSpawnPoint> register(@NotNull SJailSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
 
-    default boolean register(@NotNull SSpawnPointBuilder builder, @NotNull Cause cause) {
+    default Optional<SSpawnPoint> register(@NotNull SSpawnPointBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
     }
 
-    default boolean register(@NotNull SWarpBuilder builder, @NotNull Cause cause) {
+    default Optional<SWarp> register(@NotNull SWarpBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
     }
 
-    default boolean register(@NotNull SJailSpawnPointBuilder builder, @NotNull Cause cause) {
+    default Optional<SJailSpawnPoint> register(@NotNull SJailSpawnPointBuilder builder, @NotNull Cause cause) {
         return this.register(builder, true, cause);
     }
 
-    default boolean register(@NotNull SSpawnPointBuilder builder) {
+    default Optional<SSpawnPoint> register(@NotNull SSpawnPointBuilder builder) {
         return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
-    default boolean register(@NotNull SWarpBuilder builder) {
+    default Optional<SWarp> register(@NotNull SWarpBuilder builder) {
         return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
-    default boolean register(@NotNull SJailSpawnPointBuilder builder) {
+    default Optional<SJailSpawnPoint> register(@NotNull SJailSpawnPointBuilder builder) {
         return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
