@@ -9,6 +9,6 @@ public interface PlayerOnlyCommandMessageAdapter extends MessageAdapter {
     @NotNull Component adaptMessage(@NotNull Component message);
 
     default @NotNull Component adaptMessage() {
-        return this.adaptMessage(this.defaultUnadaptedMessage());
+        return this.adaptMessage(this.unadaptedMessage());
     }
 }

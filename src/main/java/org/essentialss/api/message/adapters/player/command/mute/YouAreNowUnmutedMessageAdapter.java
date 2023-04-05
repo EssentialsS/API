@@ -10,6 +10,6 @@ public interface YouAreNowUnmutedMessageAdapter extends MessageAdapter {
     @NotNull Component adaptMessage(@NotNull Component message, @NotNull MuteType... types);
 
     default @NotNull Component adaptMessage(@NotNull MuteType... types) {
-        return this.adaptMessage(this.defaultUnadaptedMessage(), types);
+        return this.adaptMessage(this.unadaptedMessage(), types);
     }
 }

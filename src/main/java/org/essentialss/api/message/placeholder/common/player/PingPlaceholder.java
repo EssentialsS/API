@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
+import org.essentialss.api.message.placeholder.SPlaceHolders;
 import org.essentialss.api.utils.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -11,13 +12,12 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 public class PingPlaceholder implements SPlaceHolder<ServerPlayer> {
 
     public static final String TAG_NAME = "ping";
-    public static final String TAG_TYPE = "player";
 
     private final @NotNull String tag;
     private final @NotNull String name;
 
     public PingPlaceholder() {
-        this(TAG_TYPE, TAG_NAME);
+        this(SPlaceHolders.PLAYER, TAG_NAME);
     }
 
     public PingPlaceholder(@NotNull String tag, @NotNull String name) {

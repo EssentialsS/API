@@ -3,19 +3,19 @@ package org.essentialss.api.message.placeholder.common.player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
+import org.essentialss.api.message.placeholder.SPlaceHolders;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.jetbrains.annotations.NotNull;
 
 public class NicknamePlaceholder implements SPlaceHolder<SGeneralUnloadedData> {
 
     public static final String TAG_NAME = "nickname";
-    public static final String TAG_TYPE = "player";
 
     private final @NotNull String tag;
     private final @NotNull String name;
 
     public NicknamePlaceholder() {
-        this(TAG_TYPE, TAG_NAME);
+        this(SPlaceHolders.PLAYER, TAG_NAME);
     }
 
     public NicknamePlaceholder(@NotNull String tag, @NotNull String name) {

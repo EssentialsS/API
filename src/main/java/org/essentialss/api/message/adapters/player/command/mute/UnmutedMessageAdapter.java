@@ -11,7 +11,7 @@ public interface UnmutedMessageAdapter extends MessageAdapter {
     @NotNull Component adaptMessage(@NotNull Component message, @NotNull SGeneralUnloadedData playerData, @NotNull MuteType... types);
 
     default @NotNull Component adaptMessage(@NotNull SGeneralUnloadedData playerData, @NotNull MuteType... types) {
-        return this.adaptMessage(this.defaultUnadaptedMessage(), playerData, types);
+        return this.adaptMessage(this.unadaptedMessage(), playerData, types);
     }
 
 }

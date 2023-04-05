@@ -2,6 +2,11 @@ package org.essentialss.api.message.placeholder;
 
 import org.essentialss.api.message.MuteType;
 import org.essentialss.api.message.placeholder.common.DurationPlaceholder;
+import org.essentialss.api.message.placeholder.common.command.ArgumentsCommandPlaceholder;
+import org.essentialss.api.message.placeholder.common.command.FullCommandPlaceholder;
+import org.essentialss.api.message.placeholder.common.command.MainCommandPlaceholder;
+import org.essentialss.api.message.placeholder.common.console.ConsoleNamePlaceholder;
+import org.essentialss.api.message.placeholder.common.console.ConsoleNicknamePlaceholder;
 import org.essentialss.api.message.placeholder.common.player.NamePlaceholder;
 import org.essentialss.api.message.placeholder.common.player.NicknamePlaceholder;
 import org.essentialss.api.message.placeholder.common.player.PingPlaceholder;
@@ -20,8 +25,14 @@ import java.util.stream.Collectors;
 
 public final class SPlaceHolders {
 
+    public static final String COMMAND = "command";
+    public static final String PLAYER = "player";
+    public static final String POINT = "point";
+
     public static final NicknamePlaceholder PLAYER_NICKNAME = new NicknamePlaceholder();
     public static final NamePlaceholder PLAYER_NAME = new NamePlaceholder();
+    public static final ConsoleNamePlaceholder CONSOLE_NAME = new ConsoleNamePlaceholder();
+    public static final ConsoleNicknamePlaceholder CONSOLE_NICKNAME = new ConsoleNicknamePlaceholder();
     public static final DurationPlaceholder DURATION = new DurationPlaceholder();
     public static final PointXPlaceholder POINT_X = new PointXPlaceholder();
     public static final PointYPlaceholder POINT_Y = new PointYPlaceholder();
@@ -29,6 +40,9 @@ public final class SPlaceHolders {
     public static final PointNamePlaceholder POINT_NAME = new PointNamePlaceholder();
     public static final EnumPlaceholder<MuteType> MUTE_TYPE = new EnumPlaceholder<>("mute", "type", MuteType.class);
     public static final PingPlaceholder PLAYER_PING = new PingPlaceholder();
+    public static final MainCommandPlaceholder COMMAND_MAIN = new MainCommandPlaceholder();
+    public static final ArgumentsCommandPlaceholder COMMAND_ARGUMENTS = new ArgumentsCommandPlaceholder();
+    public static final FullCommandPlaceholder COMMAND_FULL = new FullCommandPlaceholder();
 
     @SuppressWarnings("ReturnOfNull")
     private static final Singleton<Collection<SPlaceHolder<?>>> DEFAULT_PLACEHOLDERS = new Singleton<>(() -> Arrays

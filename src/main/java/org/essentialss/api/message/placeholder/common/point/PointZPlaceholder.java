@@ -3,6 +3,7 @@ package org.essentialss.api.message.placeholder.common.point;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
+import org.essentialss.api.message.placeholder.SPlaceHolders;
 import org.essentialss.api.world.points.SPoint;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,18 +11,17 @@ public class PointZPlaceholder implements SPlaceHolder<SPoint> {
 
 
     public static final String TAG_NAME = "z exact";
-    public static final String TAG_TYPE = "point";
 
     private final @NotNull String tag;
-    private final @NotNull String type;
+    private final @NotNull String name;
 
     public PointZPlaceholder() {
-        this(TAG_NAME, TAG_TYPE);
+        this(SPlaceHolders.POINT, TAG_NAME);
     }
 
-    public PointZPlaceholder(@NotNull String tag, @NotNull String type) {
+    public PointZPlaceholder(@NotNull String tag, @NotNull String name) {
         this.tag = tag;
-        this.type = type;
+        this.name = name;
     }
 
     @Override
@@ -36,12 +36,12 @@ public class PointZPlaceholder implements SPlaceHolder<SPoint> {
 
     @Override
     public @NotNull String placeholderTagName() {
-        return this.tag;
+        return this.name;
     }
 
     @Override
     public @NotNull String placeholderTagType() {
-        return this.type;
+        return this.tag;
     }
 
     @Override

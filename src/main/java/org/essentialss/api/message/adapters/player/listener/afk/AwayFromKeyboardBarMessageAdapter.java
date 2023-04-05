@@ -11,7 +11,7 @@ public interface AwayFromKeyboardBarMessageAdapter extends MessageAdapter {
     @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull Duration timeLeft);
 
     default @NotNull Component adaptMessage(@NotNull Duration timeLeft) {
-        return this.adaptMessage(this.defaultUnadaptedMessage(), timeLeft);
+        return this.adaptMessage(this.unadaptedMessage(), timeLeft);
     }
 
 }

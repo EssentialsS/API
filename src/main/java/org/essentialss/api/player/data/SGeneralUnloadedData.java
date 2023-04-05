@@ -59,6 +59,10 @@ public interface SGeneralUnloadedData extends Serializable {
 
     @NotNull UnmodifiableCollection<SHome> homes();
 
+    boolean isCommandSpying();
+
+    void setCommandSpying(boolean spying);
+
     boolean isInJail();
 
     boolean isPreventingTeleportRequests();

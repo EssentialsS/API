@@ -10,7 +10,7 @@ public interface AwayFromKeyboardForTooLongMessageAdapter extends MessageAdapter
     @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData player);
 
     default @NotNull Component adaptMessage(@NotNull SGeneralPlayerData player) {
-        return this.adaptMessage(this.defaultUnadaptedMessage(), player);
+        return this.adaptMessage(this.unadaptedMessage(), player);
     }
 
 }

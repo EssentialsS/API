@@ -10,7 +10,7 @@ public interface BackToKeyboardMessageAdapter extends MessageAdapter {
     @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData backPlayer);
 
     default @NotNull Component adaptMessage(@NotNull SGeneralPlayerData backPlayer) {
-        return this.adaptMessage(this.defaultUnadaptedMessage(), backPlayer);
+        return this.adaptMessage(this.unadaptedMessage(), backPlayer);
     }
 
 }

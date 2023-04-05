@@ -3,6 +3,7 @@ package org.essentialss.api.message.placeholder.common.point;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
+import org.essentialss.api.message.placeholder.SPlaceHolders;
 import org.essentialss.api.world.points.SPoint;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,18 +11,17 @@ public class PointXPlaceholder implements SPlaceHolder<SPoint> {
 
 
     public static final String TAG_NAME = "x exact";
-    public static final String TAG_TYPE = "point";
 
     private final @NotNull String tag;
-    private final @NotNull String type;
+    private final @NotNull String name;
 
     public PointXPlaceholder() {
-        this(TAG_NAME, TAG_TYPE);
+        this(SPlaceHolders.POINT, TAG_NAME);
     }
 
-    public PointXPlaceholder(@NotNull String tag, @NotNull String type) {
+    public PointXPlaceholder(@NotNull String tag, @NotNull String name) {
         this.tag = tag;
-        this.type = type;
+        this.name = name;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PointXPlaceholder implements SPlaceHolder<SPoint> {
 
     @Override
     public @NotNull String placeholderTagType() {
-        return this.type;
+        return this.name;
     }
 
     @Override

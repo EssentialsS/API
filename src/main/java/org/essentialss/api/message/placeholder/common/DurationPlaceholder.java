@@ -14,15 +14,15 @@ public class DurationPlaceholder implements SPlaceHolder<Duration> {
     public static final String TAG_TYPE = "duration";
 
     private final @NotNull String tag;
-    private final @NotNull String type;
+    private final @NotNull String name;
 
     public DurationPlaceholder() {
         this(TAG_NAME, TAG_TYPE);
     }
 
-    public DurationPlaceholder(@NotNull String tag, @NotNull String type) {
+    public DurationPlaceholder(@NotNull String tag, @NotNull String name) {
         this.tag = tag;
-        this.type = type;
+        this.name = name;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DurationPlaceholder implements SPlaceHolder<Duration> {
 
     @Override
     public @NotNull String placeholderTagType() {
-        return this.type;
+        return this.name;
     }
 
     @Override

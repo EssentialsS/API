@@ -217,6 +217,7 @@ public final class SParameters {
                 .completer((context, currentInput) -> adapters
                         .stream()
                         .map(adapter -> Arrays.stream(adapter.configValue().nodes()).map(Object::toString).collect(Collectors.joining(".")))
+                        .filter(asNode -> asNode.toLowerCase().startsWith(currentInput.toLowerCase()))
                         .sorted(Comparator.naturalOrder())
                         .map(CommandCompletion::of)
                         .collect(Collectors.toList()));
