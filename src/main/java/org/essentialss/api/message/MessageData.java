@@ -14,12 +14,12 @@ public class MessageData {
         this.message = message;
     }
 
-    public @NotNull Component originalMessage() {
+    public @NotNull Component formattedMessage() {
+        //TODO format
         return this.message;
     }
 
-    public @NotNull Component formattedMessage() {
-        //TODO format
+    public @NotNull Component originalMessage() {
         return this.message;
     }
 

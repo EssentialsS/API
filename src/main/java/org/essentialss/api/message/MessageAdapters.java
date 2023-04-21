@@ -12,6 +12,7 @@ import org.essentialss.api.message.adapters.player.listener.afk.AwayFromKeyboard
 import org.essentialss.api.message.adapters.player.listener.afk.AwayFromKeyboardForTooLongMessageAdapter;
 import org.essentialss.api.message.adapters.player.listener.afk.AwayFromKeyboardMessageAdapter;
 import org.essentialss.api.message.adapters.player.listener.afk.BackToKeyboardMessageAdapter;
+import org.essentialss.api.message.adapters.player.listener.chat.ChatMessageAdapter;
 import org.essentialss.api.message.adapters.player.listener.spy.CommandSpyMessageAdapter;
 import org.essentialss.api.message.adapters.warp.CreateWarpMessageAdapter;
 import org.essentialss.api.utils.Singleton;
@@ -29,6 +30,8 @@ public interface MessageAdapters {
     Singleton<AwayFromKeyboardForTooLongMessageAdapter> awayFromKeyboardForTooLong();
 
     Singleton<BackToKeyboardMessageAdapter> backToKeyboard();
+
+    Singleton<ChatMessageAdapter> chat();
 
     Singleton<CommandSpyMessageAdapter> commandSpy();
 

@@ -10,6 +10,7 @@ import org.essentialss.api.message.placeholder.common.console.ConsoleNicknamePla
 import org.essentialss.api.message.placeholder.common.player.NamePlaceholder;
 import org.essentialss.api.message.placeholder.common.player.NicknamePlaceholder;
 import org.essentialss.api.message.placeholder.common.player.PingPlaceholder;
+import org.essentialss.api.message.placeholder.common.player.chat.MessagePlaceholder;
 import org.essentialss.api.message.placeholder.common.point.PointNamePlaceholder;
 import org.essentialss.api.message.placeholder.common.point.PointXPlaceholder;
 import org.essentialss.api.message.placeholder.common.point.PointYPlaceholder;
@@ -28,6 +29,7 @@ public final class SPlaceHolders {
     public static final String COMMAND = "command";
     public static final String PLAYER = "player";
     public static final String POINT = "point";
+    public static final String MESSAGE = "message";
 
     public static final NicknamePlaceholder PLAYER_NICKNAME = new NicknamePlaceholder();
     public static final NamePlaceholder PLAYER_NAME = new NamePlaceholder();
@@ -43,6 +45,7 @@ public final class SPlaceHolders {
     public static final MainCommandPlaceholder COMMAND_MAIN = new MainCommandPlaceholder();
     public static final ArgumentsCommandPlaceholder COMMAND_ARGUMENTS = new ArgumentsCommandPlaceholder();
     public static final FullCommandPlaceholder COMMAND_FULL = new FullCommandPlaceholder();
+    public static final MessagePlaceholder MESSAGE_TEXT = new MessagePlaceholder();
 
     @SuppressWarnings("ReturnOfNull")
     private static final Singleton<Collection<SPlaceHolder<?>>> DEFAULT_PLACEHOLDERS = new Singleton<>(() -> Arrays
