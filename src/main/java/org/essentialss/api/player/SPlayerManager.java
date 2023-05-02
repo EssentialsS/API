@@ -5,7 +5,7 @@ import org.essentialss.api.player.data.SGeneralOfflineData;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.player.data.module.load.ModuleLoader;
-import org.essentialss.api.utils.arrays.SingleUnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;

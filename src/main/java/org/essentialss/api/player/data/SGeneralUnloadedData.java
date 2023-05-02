@@ -7,6 +7,7 @@ import org.essentialss.api.player.data.module.ModuleData;
 import org.essentialss.api.player.data.module.SerializableModuleData;
 import org.essentialss.api.player.mail.MailMessage;
 import org.essentialss.api.player.mail.MailMessageBuilder;
+import org.essentialss.api.utils.arrays.OrderedUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.home.SHome;
@@ -19,7 +20,10 @@ import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.world.Location;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface SGeneralUnloadedData extends Serializable {
 
@@ -31,7 +35,7 @@ public interface SGeneralUnloadedData extends Serializable {
 
     void addMailMessage(@NotNull MailMessageBuilder builder);
 
-    @NotNull LinkedList<OfflineLocation> backTeleportLocations();
+    @NotNull OrderedUnmodifiableCollection<OfflineLocation> backTeleportLocations();
 
     boolean canLooseItemsWhenUsed();
 

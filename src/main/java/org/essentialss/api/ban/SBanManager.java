@@ -7,7 +7,7 @@ import org.essentialss.api.ban.data.MacAddressBanData;
 import org.essentialss.api.config.configs.BanConfig;
 import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.Singleton;
-import org.essentialss.api.utils.arrays.SingleUnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

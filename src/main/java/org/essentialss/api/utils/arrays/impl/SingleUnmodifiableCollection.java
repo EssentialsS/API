@@ -1,5 +1,6 @@
-package org.essentialss.api.utils.arrays;
+package org.essentialss.api.utils.arrays.impl;
 
+import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

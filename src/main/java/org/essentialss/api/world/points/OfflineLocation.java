@@ -56,4 +56,21 @@ public class OfflineLocation implements StringIdentifier {
     public @NotNull String identifier() {
         return this.data.identifier();
     }
+
+    @Override
+    public int hashCode() {
+        return Integer.parseInt(this.identifier().hashCode() + "" + this.position.hashCode());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof OfflineLocation)){
+            return false;
+        }
+        OfflineLocation compare = (OfflineLocation) obj;
+        if(!this.identifier().equals(compare.identifier())){
+            return false;
+        }
+        return this.position.equals(compare.position);
+    }
 }
