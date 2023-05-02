@@ -16,6 +16,10 @@ jobs:
       run: git clone https://github.com/EssentialsS/API.git
     - name: current version
       run: echo "CURRENT_VERSION=$(mvn -f /API/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
+    - name: Versions
+      run: |
+        echo "$SPECIFIED_VERSION"
+        echo "$CURRENT_VERSION"
     - name: versions
       run: exit 1
       if:  ${{ env.CURRENT_VERSION == env.SPECIFIED_VERSION }}
