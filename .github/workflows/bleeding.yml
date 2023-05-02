@@ -11,15 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: specified version
-      run: echo "SPECIFIED_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      id: specified
+      run: echo "SPECIFIED_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+    - name: specified version string
+      run: echo ${{ steps.specified.output.SPECIFIED_VERSION }}
     - name: clone current bleeding
       run: git clone https://github.com/EssentialsS/API.git
     - name: current version
-      run: echo "CURRENT_VERSION=$(mvn -f /API/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
-    - name: Versions
-      run: |
-        echo "$SPECIFIED_VERSION"
-        echo "$CURRENT_VERSION"
+      id: current
+      run: echo "CURRENT_VERSION=$(mvn -f /API/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+    - name: current version string
+      run: echo ${{ steps.current.output.CURRENT_VERSION }}
     - name: versions
       run: exit 1
       if:  ${{ env.CURRENT_VERSION == env.SPECIFIED_VERSION }}
