@@ -17,7 +17,7 @@ jobs:
     - name: specified version string
       run: echo ${{ steps.specified.outputs.SPECIFIED_VERSION }}
     - name: clone current bleeding
-      run: git clone https://github.com/EssentialsS/API.git
+      run: git clone -b bleeding https://github.com/EssentialsS/API.git
     - name: current version
       id: current
       run: echo "CURRENT_VERSION=$(mvn -f API/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> "$GITHUB_OUTPUT"
