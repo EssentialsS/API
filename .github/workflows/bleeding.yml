@@ -19,7 +19,7 @@ jobs:
       run: git clone https://github.com/EssentialsS/API.git
     - name: current version
       id: current
-      run: echo "CURRENT_VERSION=$(mvn -f /API/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+      run: echo "CURRENT_VERSION=$(mvn -f API/pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
     - name: current version string
       run: echo ${{ steps.current.output.CURRENT_VERSION }}
     - name: versions
