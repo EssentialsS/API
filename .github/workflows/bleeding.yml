@@ -10,6 +10,7 @@ jobs:
     name: version check
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: specified version
       id: specified
       run: echo "SPECIFIED_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
