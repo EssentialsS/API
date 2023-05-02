@@ -25,6 +25,6 @@ jobs:
       run: echo ${{ steps.current.outputs.CURRENT_VERSION }}
     - name: versions
       run: exit 1
-      if:  ${{ steps.current.output.CURRENT_VERSION == steps.specified.output.SPECIFIED_VERSION }}
+      if:  ${{ steps.current.outputs.CURRENT_VERSION == steps.specified.outputs.SPECIFIED_VERSION }}
         
       
