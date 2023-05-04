@@ -27,6 +27,6 @@ jobs:
         with:
           files: 'target/api-*.jar'
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.specified.outputs.SPECIFIED_VERSION }}
+          tag_name: ${{ steps.specified.outputs.SPECIFIED_VERSION }}
           name: "Bleeding: ${{ steps.specified.outputs.SPECIFIED_VERSION }}"
           prerelease: true
