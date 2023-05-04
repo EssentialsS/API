@@ -2,7 +2,7 @@ package org.essentialss.api.world;
 
 import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
-import org.essentialss.api.utils.arrays.SingleUnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.OfflineLocation;

@@ -2,6 +2,7 @@ package org.essentialss.api;
 
 import org.essentialss.api.ban.SBanManager;
 import org.essentialss.api.config.SConfigManager;
+import org.essentialss.api.kit.KitManager;
 import org.essentialss.api.message.MessageManager;
 import org.essentialss.api.player.SPlayerManager;
 import org.essentialss.api.utils.Singleton;
@@ -19,6 +20,8 @@ public interface EssentialsSAPI {
     @NotNull Singleton<SConfigManager> configManager();
 
     @NotNull PluginContainer container();
+
+    @NotNull Singleton<KitManager> kitManager();
 
     @NotNull Singleton<MessageManager> messageManager();
 
