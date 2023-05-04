@@ -21,24 +21,26 @@ public class KitBuilder {
     private String idName;
     private PluginContainer plugin;
 
-    public void addKitSlot(@NotNull ItemStackSnapshot item, @Nullable Integer slot) {
+    public KitBuilder addKitSlot(@NotNull ItemStackSnapshot item, @Nullable Integer slot) {
         this.kitSlots.put(item, slot);
+        return this;
     }
 
-    public void addKitSlot(@NotNull ItemStackSnapshot item) {
-        this.addKitSlot(item, null);
+    public KitBuilder addKitSlot(@NotNull ItemStackSnapshot item) {
+        return this.addKitSlot(item, null);
     }
 
-    public void addKitSlots(@SuppressWarnings("TypeMayBeWeakened") @NotNull PlayerInventory inventory) {
+    public KitBuilder addKitSlots(@SuppressWarnings("TypeMayBeWeakened") @NotNull PlayerInventory inventory) {
         inventory
                 .slots()
                 .stream()
                 .filter(slot -> !slot.peek().equals(ItemStack.empty()))
                 .forEach(slot -> this.addKitSlot(slot.peek().createSnapshot(), slot.get(Keys.SLOT_INDEX).orElse(null)));
+        return this;
     }
 
-    public void addKitSlots(@NotNull Inventory inventory) {
-        this.addKitSlots(inventory
+    public KitBuilder addKitSlots(@NotNull Inventory inventory) {
+        return this.addKitSlots(inventory
                                  .slots()
                                  .stream()
                                  .map(Inventory::peek)
@@ -47,10 +49,11 @@ public class KitBuilder {
                                  .collect(Collectors.toList()));
     }
 
-    public void addKitSlots(@NotNull Iterable<ItemStackSnapshot> items) {
+    public KitBuilder addKitSlots(@NotNull Iterable<ItemStackSnapshot> items) {
         for (ItemStackSnapshot item : items) {
             this.addKitSlot(item);
         }
+        return this;
     }
 
     public String displayName() {

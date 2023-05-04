@@ -3,6 +3,7 @@ package org.essentialss.api.kit;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.utils.Singleton;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.item.inventory.entity.PlayerInventory;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
@@ -14,8 +15,9 @@ import java.util.stream.Stream;
 
 public interface Kit {
 
-    default Stream<InventoryTransactionResult> apply(PlayerInventory inventory) {
-        return inventory().get().stream().map(kitSlot -> kitSlot.apply(inventory));
+    default void apply(PlayerInventory inventory) {
+        UnmodifiableCollection<KitSlot> kitSlots = this.inventory().get();
+        kitSlots.forEach(kitSlot -> kitSlot.apply(inventory));
     }
 
     ViewableInventory createInventory();

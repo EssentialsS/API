@@ -176,10 +176,10 @@ public final class SParameters {
         return Parameter.string().completer(HOSTNAME_COMPLETER).addParser(combine(IP_V4, IP_V6, URL));
     }
 
-    public static Parameter.Value.Builder<Kit> kitParameter() {
+    public static Parameter.Value.Builder<Kit> kitParameter(BiPredicate<CommandContext, Kit> allow) {
         return Parameter.builder(Kit.class).addParser((parameterKey, reader, context) -> {
             String toMatch = reader.parseString();
-            return EssentialsSAPI.get().kitManager().get().kits().stream().filter(kit -> {
+            return EssentialsSAPI.get().kitManager().get().kits().stream().filter(kit -> allow.test(context, kit)).filter(kit -> {
                 if (kit.getKey().asString().equalsIgnoreCase(toMatch)) {
                     return true;
                 }
@@ -192,6 +192,7 @@ public final class SParameters {
                     .get()
                     .kits()
                     .stream()
+                    .filter(kit -> allow.test(context, kit))
                     .flatMap(kit -> Stream.of(CommandCompletion.of(kit.getKey().formatted(), Component.text(kit.displayName())),
                                               CommandCompletion.of(kit.displayName())))
                     .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(CommandCompletion::completion))));
