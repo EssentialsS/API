@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
-public interface AwayFromKeyboardBarMessageAdapter extends MessageAdapter {
+public interface AwayFromKeyboardBarMessageAdapter extends MessageAdapter.Enabled {
 
     @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull Duration timeLeft);
 

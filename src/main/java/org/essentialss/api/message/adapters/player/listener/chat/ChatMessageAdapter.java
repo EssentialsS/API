@@ -9,7 +9,7 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 import java.util.Collection;
 
-public interface ChatMessageAdapter extends MessageAdapter {
+public interface ChatMessageAdapter extends MessageAdapter.Enabled {
 
     Component adaptMessage(@NotNull Component unformatted, @NotNull ServerPlayer player, @NotNull Audience receiver, @NotNull Component message);
 
@@ -27,6 +27,9 @@ public interface ChatMessageAdapter extends MessageAdapter {
 
     void register(@NotNull ChatFormat chatFormat);
 
-    boolean shouldUseComponentOverride();
+    @Deprecated
+    default boolean shouldUseComponentOverride() {
+        return this.isEnabled();
+    }
 
 }

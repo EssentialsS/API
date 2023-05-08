@@ -14,14 +14,14 @@ public class Singleton<T> {
         this.getter = getter;
     }
 
-    public @NotNull T get() {
+    public T get() {
         if (null == this.cached) {
             return this.runGetter();
         }
         return this.cached;
     }
 
-    private synchronized @NotNull T runGetter() {
+    private synchronized T runGetter() {
         if (null != this.cached) {
             return this.cached;
         }

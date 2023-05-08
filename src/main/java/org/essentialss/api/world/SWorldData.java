@@ -1,9 +1,10 @@
 package org.essentialss.api.world;
 
+import net.kyori.adventure.audience.Audience;
 import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
-import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.SPoint;
@@ -20,8 +21,10 @@ import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.world.World;
 import org.spongepowered.math.vector.Vector3d;
+import org.spongepowered.math.vector.Vector3i;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public interface SWorldData extends StringIdentifier, Serializable {
@@ -58,6 +61,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return this.deregister(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
 
+    Optional<SPreGenData> generatingChunkData();
+
     boolean isWorld(@NotNull World<?, ?> world);
 
     default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull String identifier) {
@@ -80,6 +85,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
     default @NotNull UnmodifiableCollection<SJailSpawnPoint> jailPositions() {
         return new SingleUnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
     }
+
+    @NotNull Optional<CompletableFuture<World<?, ?>>> loadWorld();
 
     default OfflineLocation offlineLocation(@NotNull Vector3d position) {
         return new OfflineLocation(this, position);
@@ -120,6 +127,12 @@ public interface SWorldData extends StringIdentifier, Serializable {
     default Optional<SJailSpawnPoint> register(@NotNull SJailSpawnPointBuilder builder) {
         return this.register(builder, true, CrossSpongePlatformUtils.spongeEngine().causeStackManager().currentCause());
     }
+
+    default Optional<SPreGenData> setPreGeneratingData(@NotNull Vector3i center, double radius) {
+        return this.setPreGeneratingData(center, radius, null);
+    }
+
+    Optional<SPreGenData> setPreGeneratingData(@NotNull Vector3i center, double radius, @Nullable Audience audience);
 
     default @NotNull SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition) {
         return this.spawnPoint(blockPosition, true);

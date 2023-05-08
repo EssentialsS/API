@@ -15,6 +15,14 @@ import java.util.Collection;
 
 public interface MessageAdapter {
 
+    interface Enabled extends MessageAdapter {
+        @NotNull SingleConfigValue.Default<Boolean> enabledValue();
+
+        default boolean isEnabled() {
+            return this.enabledValue().parseDefault(EssentialsSAPI.get().messageManager().get().config().get());
+        }
+    }
+
     @NotNull SingleConfigValue.Default<Component> configValue();
 
     default @NotNull Component defaultUnadaptedMessage() {

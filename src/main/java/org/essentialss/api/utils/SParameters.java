@@ -10,7 +10,9 @@ import org.essentialss.api.kit.Kit;
 import org.essentialss.api.message.adapters.MessageAdapter;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
+import org.essentialss.api.utils.lamda.ThrowableFunction;
 import org.essentialss.api.utils.parameter.ParameterAdapter;
+import org.essentialss.api.world.SWorldData;
 import org.essentialss.api.world.SWorldManager;
 import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
+import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.command.parameter.managed.ValueCompleter;
@@ -26,6 +29,7 @@ import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.client.ClientWorld;
+import org.spongepowered.math.vector.Vector3i;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -347,6 +351,25 @@ public final class SParameters {
         return Parameter.enumValue(SSpawnType.class);
     }
 
+    private static <N extends Number, V> V vector(ArgumentReader.Mutable reader,
+                                                  int amount,
+                                                  ThrowableFunction<ArgumentReader.Mutable, N, ArgumentParseException> parse,
+                                                  Function<List<N>, V> to) throws ArgumentParseException {
+        List<N> numbers = new ArrayList<>(amount);
+        for (int i = 0; i < amount; i++) {
+            N value = parse.map(reader);
+            numbers.add(value);
+        }
+        return to.apply(numbers);
+    }
+
+    public static Parameter.Value.Builder<Vector3i> vector3Integer() {
+        return Parameter.builder(Vector3i.class).addParser((parameterKey, reader, context) -> {
+            Vector3i vector = vector(reader, 3, ArgumentReader.Mutable::parseInt, list -> new Vector3i(list.get(0), list.get(1), list.get(2)));
+            return Optional.of(vector);
+        });
+    }
+
     public static Parameter.Value.Builder<SWarp> warp() {
         return Parameter.builder(SWarp.class).addParser((parameterKey, reader, context) -> {
             SWorldManager worldManager = EssentialsSAPI.get().worldManager().get();
@@ -397,6 +420,21 @@ public final class SParameters {
                     .map(warp -> CommandCompletion.of(warp.identifier()))
                     .sorted(Comparator.comparing(CommandCompletion::completion))
                     .collect(Collectors.toList());
+        });
+    }
+
+    public static Parameter.Value.Builder<SWorldData> worldData() {
+        return Parameter.builder(SWorldData.class).completer(WORLD_COMPLETER).addParser((parameterKey, reader, context) -> {
+            if (Sponge.isClientAvailable() && !Sponge.isServerAvailable()) {
+                return Sponge.client().world().map(world -> EssentialsSAPI.get().worldManager().get().dataFor(world));
+            }
+            String parseKey = reader.parseString();
+            return Sponge.server().worldManager().worldKeys().stream().filter(key -> {
+                if (key.asString().equalsIgnoreCase(parseKey)) {
+                    return true;
+                }
+                return key.value().equalsIgnoreCase(parseKey);
+            }).findAny().map(key -> EssentialsSAPI.get().worldManager().get().dataFor(key));
         });
     }
 }

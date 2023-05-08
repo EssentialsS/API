@@ -16,14 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.cause.entity.damage.DamageType;
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.world.Location;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public interface SGeneralUnloadedData extends Serializable {
 
@@ -31,6 +31,16 @@ public interface SGeneralUnloadedData extends Serializable {
 
     default void addBackTeleportLocation(@NotNull Location<?, ?> location) {
         this.addBackTeleportLocation(new OfflineLocation(location));
+    }
+
+    default void addImmuneTo(Collection<DamageType> types) {
+        Collection<DamageType> type = new LinkedHashSet<>(types);
+        type.addAll(this.immuneTo());
+        this.setImmuneTo(type);
+    }
+
+    default void addImmuneTo(DamageType... types) {
+        this.addImmuneTo(Arrays.asList(types));
     }
 
     void addMailMessage(@NotNull MailMessageBuilder builder);
@@ -63,9 +73,15 @@ public interface SGeneralUnloadedData extends Serializable {
 
     @NotNull UnmodifiableCollection<SHome> homes();
 
+    UnmodifiableCollection<DamageType> immuneTo();
+
     boolean isCommandSpying();
 
     void setCommandSpying(boolean spying);
+
+    default boolean isImmuneTo(DamageType type) {
+        return this.immuneTo().contains(type);
+    }
 
     boolean isInJail();
 
@@ -100,6 +116,20 @@ public interface SGeneralUnloadedData extends Serializable {
         this.setDisplayName(null);
     }
 
+    default void removeImmuneTo(Collection<DamageType> types) {
+        Collection<DamageType> collection = new LinkedHashSet<>(this.immuneTo());
+        collection.removeAll(types);
+        this.setImmuneTo(collection);
+    }
+
+    default void removeImmuneTo(DamageType... types) {
+        this.removeImmuneTo(Arrays.asList(types));
+    }
+
+    default void removeImmunity() {
+        this.setImmuneTo(Collections.emptyList());
+    }
+
     void removeMessage(@NotNull MailMessage message);
 
     default void removeMuteTypes() {
@@ -112,7 +142,19 @@ public interface SGeneralUnloadedData extends Serializable {
 
     void setDisplayName(@Nullable Component component);
 
+    default void setGodMode() {
+        Collection<DamageType> types = new LinkedHashSet<>(DamageTypes.registry().stream().collect(Collectors.toSet()));
+        types.remove(DamageTypes.VOID.get());
+        this.setImmuneTo(types);
+    }
+
     void setHomes(@NotNull Collection<SHomeBuilder> homes);
+
+    void setImmuneTo(Collection<DamageType> immuneTo);
+
+    default void setImmuneTo(DamageType... types) {
+        this.setImmuneTo(Arrays.asList(types));
+    }
 
     void setMuteTypes(@NotNull MuteType... types);
 
