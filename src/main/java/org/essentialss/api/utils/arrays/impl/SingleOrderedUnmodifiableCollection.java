@@ -9,10 +9,11 @@ import java.util.function.Predicate;
 @SuppressWarnings("NullableProblems")
 public class SingleOrderedUnmodifiableCollection<E> extends LinkedList<E> implements OrderedUnmodifiableCollection<E> {
 
-    public SingleOrderedUnmodifiableCollection(List<E> collection) {
-        super(Collections.unmodifiableList(collection));
+    public SingleOrderedUnmodifiableCollection(Collection<E> collection) {
+        super(Collections.unmodifiableList((collection instanceof List) ? (List<E>) collection : new LinkedList<>(collection)));
     }
 
+    @SafeVarargs
     public SingleOrderedUnmodifiableCollection(E... array) {
         super(Arrays.asList(array));
     }

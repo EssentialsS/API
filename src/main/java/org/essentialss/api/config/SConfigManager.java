@@ -8,6 +8,8 @@ import org.essentialss.api.config.configs.MessageConfig;
 import org.essentialss.api.utils.Singleton;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public interface SConfigManager {
 
     @NotNull Singleton<AwayFromKeyboardConfig> awayFromKeyboard();
@@ -18,8 +20,12 @@ public interface SConfigManager {
 
     @NotNull Singleton<GeneralConfig> general();
 
+    default @NotNull Singleton<MessageConfig> message(@NotNull Locale locale) {
+        return EssentialsSAPI.get().messageManager().get().config(locale);
+    }
+
     default @NotNull Singleton<MessageConfig> message() {
-        return EssentialsSAPI.get().messageManager().get().config();
+        return this.message(Locale.ENGLISH);
     }
 
 }

@@ -5,6 +5,7 @@ import org.essentialss.api.player.data.SGeneralOfflineData;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.player.data.module.load.ModuleLoader;
+import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
 import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +58,7 @@ public interface SPlayerManager {
             return new SingleUnmodifiableCollection<>(Collections.emptyList());
         }
         UserManager manager = Sponge.server().userManager();
-        return new SingleUnmodifiableCollection<>(manager.streamAll().map(this::dataFor).collect(Collectors.toList()));
+        return manager.streamAll().map(this::dataFor).collect(UnmodifiableCollectors.asUnordered());
     }
 
     default CompletableFuture<UnmodifiableCollection<SGeneralOfflineData>> userDataForAll() {

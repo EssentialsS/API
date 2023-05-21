@@ -7,6 +7,8 @@ import org.essentialss.api.utils.Singleton;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public interface MessageManager {
 
     default <T> @NotNull Component adaptMessageFor(@NotNull Component messageToAdapt, T obj) {
@@ -18,7 +20,11 @@ public interface MessageManager {
 
     @NotNull MessageAdapters adapters();
 
-    @NotNull Singleton<MessageConfig> config();
+    @NotNull Singleton<MessageConfig> config(@NotNull Locale locale);
+
+    default @NotNull Singleton<MessageConfig> config() {
+        return this.config(Locale.ENGLISH);
+    }
 
     <T> @NotNull UnmodifiableCollection<SPlaceHolder<T>> mappedPlaceholdersFor(@NotNull Class<T> type);
 

@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.CrossSpongePlatformUtils;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
 import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.OfflineLocation;
@@ -25,7 +26,6 @@ import org.spongepowered.math.vector.Vector3i;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public interface SWorldData extends StringIdentifier, Serializable {
 
@@ -86,16 +86,18 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return new SingleUnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
     }
 
-    @NotNull Optional<CompletableFuture<World<?, ?>>> loadWorld();
+    @NotNull
+    Optional<CompletableFuture<World<?, ?>>> loadWorld();
 
     default OfflineLocation offlineLocation(@NotNull Vector3d position) {
         return new OfflineLocation(this, position);
     }
 
-    @NotNull UnmodifiableCollection<SPoint> points();
+    @NotNull
+    UnmodifiableCollection<SPoint> points();
 
     default <P extends SPoint> @NotNull UnmodifiableCollection<P> pointsOf(@NotNull Class<P> type) {
-        return new SingleUnmodifiableCollection<>(this.points().parallelStream().filter(type::isInstance).map(point -> (P) point).collect(Collectors.toSet()));
+        return this.points().parallelStream().filter(type::isInstance).map(point -> (P) point).collect(UnmodifiableCollectors.asUnordered());
     }
 
     Optional<SSpawnPoint> register(@NotNull SSpawnPointBuilder builder, boolean runEvent, @Nullable Cause cause);
@@ -139,16 +141,16 @@ public interface SWorldData extends StringIdentifier, Serializable {
     }
 
     default @NotNull SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition, boolean ignoreFirstLogin) {
-        double distance = Integer.MAX_VALUE;
+        double distance = 0;
         SSpawnPoint point = null;
         for (SSpawnPoint spawn : this.spawnPoints()) {
             if (ignoreFirstLogin && (1 == spawn.types().size()) && spawn.types().contains(SSpawnType.FIRST_LOGIN)) {
                 continue;
             }
-            double jailDistance = spawn.position().distanceSquared(blockPosition);
-            if (jailDistance < distance) {
+            double spawnDistance = spawn.position().distanceSquared(blockPosition);
+            if ((null == point) || (spawnDistance < distance)) {
                 point = spawn;
-                distance = jailDistance;
+                distance = spawnDistance;
             }
         }
         if (null == point) {
@@ -161,7 +163,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return new SingleUnmodifiableCollection<>(this.pointsOf(SSpawnPoint.class));
     }
 
-    @NotNull Optional<World<?, ?>> spongeWorld();
+    @NotNull
+    Optional<World<?, ?>> spongeWorld();
 
     default Optional<SWarp> warp(@NotNull String identifier) {
         return this.warps().parallelStream().filter(warp -> warp.identifier().equalsIgnoreCase(identifier)).findAny();

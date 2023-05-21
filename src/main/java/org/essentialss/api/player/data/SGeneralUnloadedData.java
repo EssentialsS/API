@@ -9,11 +9,15 @@ import org.essentialss.api.player.mail.MailMessage;
 import org.essentialss.api.player.mail.MailMessageBuilder;
 import org.essentialss.api.utils.arrays.OrderedUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleOrderedUnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.home.SHome;
 import org.essentialss.api.world.points.home.SHomeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mose.property.CollectionProperty;
+import org.mose.property.Property;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.entity.damage.DamageType;
@@ -23,20 +27,21 @@ import org.spongepowered.api.world.Location;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
 public interface SGeneralUnloadedData extends Serializable {
 
-    void addBackTeleportLocation(@NotNull OfflineLocation location);
+    default void addBackTeleportLocation(@NotNull OfflineLocation location) {
+        this.backTeleportLocationsProperty().add(location);
+    }
 
     default void addBackTeleportLocation(@NotNull Location<?, ?> location) {
         this.addBackTeleportLocation(new OfflineLocation(location));
     }
 
     default void addImmuneTo(Collection<DamageType> types) {
-        Collection<DamageType> type = new LinkedHashSet<>(types);
-        type.addAll(this.immuneTo());
-        this.setImmuneTo(type);
+        this.immuneToProperty().addAll(types);
     }
 
     default void addImmuneTo(DamageType... types) {
@@ -45,9 +50,19 @@ public interface SGeneralUnloadedData extends Serializable {
 
     void addMailMessage(@NotNull MailMessageBuilder builder);
 
-    @NotNull OrderedUnmodifiableCollection<OfflineLocation> backTeleportLocations();
+    @NotNull
+    default OrderedUnmodifiableCollection<OfflineLocation> backTeleportLocations() {
+        return this.backTeleportLocationsProperty().value().orElse(new SingleOrderedUnmodifiableCollection<>(Collections.emptyList()));
+    }
 
-    boolean canLooseItemsWhenUsed();
+    @NotNull
+    CollectionProperty.Write<OfflineLocation, OrderedUnmodifiableCollection<OfflineLocation>> backTeleportLocationsProperty();
+
+    default boolean canLooseItemsWhenUsed() {
+        return this.canLooseItemsWhenUsedProperty().value().orElse(false);
+    }
+
+    <P extends Property.Write<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P canLooseItemsWhenUsedProperty();
 
     default void clearBackTeleportLocations() {
         this.setBackTeleportLocations(Collections.emptyList());
@@ -55,43 +70,106 @@ public interface SGeneralUnloadedData extends Serializable {
 
     void deregister(@NotNull SHome home);
 
-    void deregisterData(@NotNull ResourceKey key);
+    default void deregisterData(@NotNull ResourceKey key) {
+        List<ModuleData<?>> list = this
+                .moduleDataProperty()
+                .value()
+                .orElse(new LinkedTransferQueue<>())
+                .stream()
+                .filter(data -> data.key().equals(key))
+                .collect(Collectors.toList());
+        this.moduleDataProperty().removeAll(list);
+    }
 
     default void deregisterData(@NotNull ModuleData<?> data) {
         this.deregisterData(data.key());
     }
 
-    @NotNull Component displayName();
+    @NotNull
+    default Component displayName() {
+        Optional<Component> component = this.displayNameProperty().value();
+        return component.orElseGet(() -> Component.text(this.playerName()));
+    }
 
-    <T extends ModuleData<?>> Optional<T> getData(@NotNull ResourceKey clazz);
+    @NotNull
+    Property.Write<Component, Component> displayNameProperty();
 
-    boolean hasSetDisplayName();
+    default <T extends ModuleData<?>> Optional<T> getData(@NotNull ResourceKey clazz) {
+        return this
+                .moduleDataProperty()
+                .value()
+                .orElse(new LinkedTransferQueue<>())
+                .stream()
+                .filter(data -> data.key().equals(clazz))
+                .findAny()
+                .map(data -> (T) data);
+    }
+
+    default boolean hasSetDisplayName() {
+        return this.displayNameProperty().value().isPresent();
+    }
 
     default Optional<SHome> home(@NotNull String homeName) {
         return this.homes().parallelStream().filter(home -> home.identifier().equalsIgnoreCase(homeName)).findAny();
     }
 
-    @NotNull UnmodifiableCollection<SHome> homes();
+    @NotNull
+    default UnmodifiableCollection<SHome> homes() {
+        return this.homesProperty().value().orElse(new SingleUnmodifiableCollection<>(Collections.emptyList()));
+    }
 
-    UnmodifiableCollection<DamageType> immuneTo();
+    CollectionProperty.ReadOnly<SHome, UnmodifiableCollection<SHome>> homesProperty();
 
-    boolean isCommandSpying();
+    default UnmodifiableCollection<DamageType> immuneTo() {
+        return this.immuneToProperty().value().orElse(new SingleUnmodifiableCollection<>(Collections.emptyList()));
+    }
 
-    void setCommandSpying(boolean spying);
+    CollectionProperty.Write<DamageType, UnmodifiableCollection<DamageType>> immuneToProperty();
+
+    default boolean isCommandSpying() {
+        return this.isCommandSpyingProperty().value().orElse(false);
+    }
+
+    default void setCommandSpying(boolean spying) {
+        this.isCommandSpyingProperty().setValue(spying);
+    }
+
+    <P extends Property.Write<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P isCommandSpyingProperty();
 
     default boolean isImmuneTo(DamageType type) {
         return this.immuneTo().contains(type);
     }
 
-    boolean isInJail();
+    default boolean isInJail() {
+        return this.isInJailProperty().value().orElse(false);
+    }
 
-    boolean isPreventingTeleportRequests();
+    <P extends Property.ReadOnly<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P isInJailProperty();
 
-    @NotNull UnmodifiableCollection<MailMessage> mailMessages();
+    default boolean isPreventingTeleportRequests() {
+        return this.isPreventingTeleportRequestsProperty().value().orElse(false);
+    }
 
-    @NotNull UnmodifiableCollection<MuteType> muteTypes();
+    <P extends Property.Write<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P isPreventingTeleportRequestsProperty();
 
-    @NotNull String playerName();
+    @NotNull
+    default UnmodifiableCollection<MailMessage> mailMessages() {
+        return this.mailMessagesProperty().value().orElse(new SingleUnmodifiableCollection<>(Collections.emptyList()));
+    }
+
+    CollectionProperty.ReadOnly<MailMessage, UnmodifiableCollection<MailMessage>> mailMessagesProperty();
+
+    CollectionProperty.Write<ModuleData<?>, LinkedTransferQueue<ModuleData<?>>> moduleDataProperty();
+
+    @NotNull
+    default UnmodifiableCollection<MuteType> muteTypes() {
+        return this.muteTypesProperty().value().orElse(new SingleUnmodifiableCollection<>(Collections.emptyList()));
+    }
+
+    CollectionProperty.Write<MuteType, UnmodifiableCollection<MuteType>> muteTypesProperty();
+
+    @NotNull
+    String playerName();
 
     default Optional<GameProfile> profile() {
         if (!Sponge.isServerAvailable()) {
@@ -102,11 +180,19 @@ public interface SGeneralUnloadedData extends Serializable {
 
     void register(@NotNull SHomeBuilder builder);
 
-    void registerOfflineData(@NotNull SerializableModuleData<?> moduleData);
+    default void registerOfflineData(@NotNull SerializableModuleData<?> moduleData) {
+        this.moduleDataProperty().add(moduleData);
+    }
 
-    Optional<LocalDateTime> releasedFromJailTime();
+    default Optional<LocalDateTime> releasedFromJailTime() {
+        return this.releasedFromJailTimeProperty().value();
+    }
 
-    void removeBackTeleportLocation(@NotNull OfflineLocation location);
+    Property.ReadOnly<LocalDateTime, LocalDateTime> releasedFromJailTimeProperty();
+
+    default void removeBackTeleportLocation(@NotNull OfflineLocation location) {
+        this.backTeleportLocationsProperty().remove(location);
+    }
 
     default void removeBackTeleportLocation(@NotNull Location<?, ?> location) {
         this.removeBackTeleportLocation(new OfflineLocation(location));
@@ -117,9 +203,7 @@ public interface SGeneralUnloadedData extends Serializable {
     }
 
     default void removeImmuneTo(Collection<DamageType> types) {
-        Collection<DamageType> collection = new LinkedHashSet<>(this.immuneTo());
-        collection.removeAll(types);
-        this.setImmuneTo(collection);
+        this.immuneToProperty().removeAll(types);
     }
 
     default void removeImmuneTo(DamageType... types) {
@@ -136,34 +220,57 @@ public interface SGeneralUnloadedData extends Serializable {
         this.setMuteTypes();
     }
 
-    void setBackTeleportLocations(Collection<OfflineLocation> locations);
+    default void setBackTeleportLocations(Collection<OfflineLocation> locations) {
+        this.backTeleportLocationsProperty().removeAll(locations);
+    }
 
-    void setCanLooseItemsWhenUsed(boolean check);
+    default void setCanLooseItemsWhenUsed(boolean check) {
+        this.canLooseItemsWhenUsedProperty().setValue(check);
+    }
 
-    void setDisplayName(@Nullable Component component);
+    default void setDisplayName(@Nullable Component component) {
+        this.displayNameProperty().setValue(component);
+    }
 
     default void setGodMode() {
-        Collection<DamageType> types = new LinkedHashSet<>(DamageTypes.registry().stream().collect(Collectors.toSet()));
+        Collection<DamageType> types = DamageTypes.registry().stream().collect(Collectors.toCollection(LinkedHashSet::new));
         types.remove(DamageTypes.VOID.get());
         this.setImmuneTo(types);
     }
 
     void setHomes(@NotNull Collection<SHomeBuilder> homes);
 
-    void setImmuneTo(Collection<DamageType> immuneTo);
+    default void setImmuneTo(Collection<DamageType> immuneTo) {
+        this.immuneToProperty().setValue(immuneTo);
+    }
 
     default void setImmuneTo(DamageType... types) {
         this.setImmuneTo(Arrays.asList(types));
     }
 
-    void setMuteTypes(@NotNull MuteType... types);
+    default void setMuteTypes(@NotNull MuteType... types) {
+        this.muteTypesProperty().setValue(types);
+    }
 
     default void setMuted() {
         this.setMuteTypes(MuteType.values());
     }
 
-    void setPreventTeleportRequests(boolean prevent);
+    default void setPreventTeleportRequests(boolean prevent) {
+        this.isPreventingTeleportRequestsProperty().setValue(prevent);
+    }
 
-    @NotNull UUID uuid();
+    default void setUnlimitedFood(boolean value) {
+        this.unlimitedFoodProperty().setValue(value);
+    }
+
+    default boolean unlimitedFood() {
+        return this.unlimitedFoodProperty().safeValue();
+    }
+
+    <P extends Property.Write<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P unlimitedFoodProperty();
+
+    @NotNull
+    UUID uuid();
 
 }
