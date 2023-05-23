@@ -8,12 +8,16 @@ import org.essentialss.api.player.data.module.ModuleData;
 import org.essentialss.api.player.teleport.PlayerTeleportRequest;
 import org.essentialss.api.player.teleport.TeleportRequest;
 import org.essentialss.api.player.teleport.TeleportRequestBuilder;
-import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
+import org.essentialss.api.utils.arrays.OrderedUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleOrderedUnmodifiableCollection;
+import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.world.SWorldData;
 import org.essentialss.api.world.points.OfflineLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mose.property.CollectionProperty;
+import org.mose.property.Property;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
@@ -25,18 +29,31 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public interface SGeneralPlayerData extends SGeneralOfflineData {
-
+    
     PlayerTeleportRequest acceptTeleportRequest(@NotNull UUID playerId) throws IllegalStateException;
 
     default PlayerTeleportRequest acceptTeleportRequest(Player player) throws IllegalStateException {
         return this.acceptTeleportRequest(player.uniqueId());
     }
 
-    Collection<SPlayerModifier<?>> appliedAwayFromKeyboardModifiers();
+    default Collection<SPlayerModifier<?>> appliedAwayFromKeyboardModifiers() {
+        return this.awayFromKeyboardModifierProperties().value().orElseGet(Collections::emptyList);
+    }
 
-    @NotNull OptionalInt backTeleportIndex();
+    CollectionProperty.Write<SPlayerModifier<?>, Collection<SPlayerModifier<?>>> awayFromKeyboardModifierProperties();
 
-    Optional<BossBar> barUntilKick();
+    @NotNull
+    default OptionalInt backTeleportIndex() {
+        return this.backTeleportIndexProperty().value().map(OptionalInt::of).orElse(OptionalInt.empty());
+    }
+
+    Property.Write<Integer, Integer> backTeleportIndexProperty();
+
+    default Optional<BossBar> barUntilKick() {
+        return this.barUntilKickedProperty().value();
+    }
+
+    Property.ReadOnly<BossBar, BossBar> barUntilKickedProperty();
 
     PlayerTeleportRequest declineTeleportRequest(@NotNull UUID playerId) throws IllegalStateException;
 
@@ -44,19 +61,39 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
         return this.declineTeleportRequest(player.uniqueId());
     }
 
-    boolean isShowingAwayFromKeyboard();
+    default boolean hasShownAwayFromKeyboardMessage() {
+        return this.hasShownAwayFromKeyboardMessageProperty().value().orElse(false);
+    }
 
-    LocalDateTime lastPlayerAction();
+    <P extends Property.Write<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P hasShownAwayFromKeyboardMessageProperty();
 
-    void playerAction();
+    default boolean isShowingAwayFromKeyboard() {
+        Optional<Boolean> opValue = this.isShowingAwayFromKeyboardProperty().value();
+        return opValue.orElse(false);
+    }
+
+    <P extends Property.ReadOnly<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P isShowingAwayFromKeyboardProperty();
+
+    Property.Write<LocalDateTime, LocalDateTime> lastActionProperty();
+
+    default LocalDateTime lastPlayerAction() {
+        return this.lastActionProperty().value().orElseGet(LocalDateTime::now);
+    }
+
+    default void playerAction() {
+        this.lastActionProperty().setValue(LocalDateTime.now());
+    }
 
     default Optional<PlayerTeleportRequest> playerTeleportRequest(@NotNull UUID sender) {
         return this.teleportRequests(PlayerTeleportRequest.class).parallelStream().filter(request -> request.sender().equals(sender)).findAny();
     }
 
-    @NotNull TeleportRequest register(@NotNull TeleportRequestBuilder builder);
+    @NotNull
+    TeleportRequest register(@NotNull TeleportRequestBuilder builder);
 
-    void registerData(@NotNull ModuleData<?> moduleData);
+    default void registerData(@NotNull ModuleData<?> moduleData) {
+        this.moduleDataProperty().add(moduleData);
+    }
 
     @Override
     default void releaseFromJail() {
@@ -87,13 +124,20 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
         this.setAwayFromKeyboardSince(since, Arrays.asList(modifiers));
     }
 
-    void setBackTeleportIndex(int index);
+    default void setBackTeleportIndex(int index) {
+        this.backTeleportIndexProperty().setValue(index);
+    }
 
     void setBarUntilKick(@Nullable BossBar bar);
 
     void setNextToKeyboard();
 
-    @NotNull Player spongePlayer();
+    default void setShownAwayFromKeyboardMessage(boolean value) {
+        hasShownAwayFromKeyboardMessageProperty().setValue(value);
+    }
+
+    @NotNull
+    Player spongePlayer();
 
     default void teleport(@NotNull Vector3d position) {
         this.addBackTeleportLocation(this.spongePlayer().location());
@@ -136,17 +180,24 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
 
     }
 
-    @NotNull UnmodifiableCollection<TeleportRequest> teleportRequests();
+    @NotNull
+    default UnmodifiableCollection<TeleportRequest> teleportRequests() {
+        return this.teleportRequestsProperty().value().orElseGet(() -> new SingleOrderedUnmodifiableCollection<>(Collections.emptyList()));
+    }
 
     default <R extends TeleportRequest> UnmodifiableCollection<R> teleportRequests(Class<R> clazz) {
         return new SingleUnmodifiableCollection<>(
                 this.teleportRequests().parallelStream().filter(clazz::isInstance).map(r -> (R) r).collect(Collectors.toList()));
     }
 
+    CollectionProperty.ReadOnly<TeleportRequest, OrderedUnmodifiableCollection<TeleportRequest>> teleportRequestsProperty();
+
     @Override
-    default @NotNull UUID uuid() {
+    @NotNull
+    default UUID uuid() {
         return this.spongePlayer().uniqueId();
     }
 
-    @NotNull SWorldData world();
+    @NotNull
+    SWorldData world();
 }

@@ -7,6 +7,7 @@ import org.essentialss.api.ban.data.MacAddressBanData;
 import org.essentialss.api.config.configs.BanConfig;
 import org.essentialss.api.config.Serializable;
 import org.essentialss.api.utils.Singleton;
+import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
 import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +47,11 @@ public interface SBanManager extends Serializable {
     UnmodifiableCollection<BanData<?>> banData();
 
     default <B extends BanData<?>> UnmodifiableCollection<B> banData(Class<B> clazz) {
-        return new SingleUnmodifiableCollection<>(this.banData().stream().filter(clazz::isInstance).map(data -> (B) data).collect(Collectors.toList()));
+        return this.banData().stream().filter(clazz::isInstance).map(data -> (B) data).collect(UnmodifiableCollectors.asUnordered());
     }
 
     default UnmodifiableCollection<BanData<?>> banData(@NotNull ServerSideConnection connection) {
-        return new SingleUnmodifiableCollection<>(this.banData().parallelStream().filter(data -> data.isBanned(connection)).collect(Collectors.toList()));
+        return this.banData().parallelStream().filter(data -> data.isBanned(connection)).collect(UnmodifiableCollectors.asUnordered());
     }
 
     IPBanData banIp(@NotNull String hostname, @Nullable String lastKnown, @Nullable LocalDateTime dateTime);
