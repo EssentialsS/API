@@ -4,12 +4,11 @@ import org.essentialss.api.ban.data.AccountBanData;
 import org.essentialss.api.ban.data.BanData;
 import org.essentialss.api.ban.data.IPBanData;
 import org.essentialss.api.ban.data.MacAddressBanData;
-import org.essentialss.api.config.configs.BanConfig;
 import org.essentialss.api.config.Serializable;
+import org.essentialss.api.config.configs.BanConfig;
 import org.essentialss.api.utils.Singleton;
-import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
-import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -21,7 +20,6 @@ import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public interface SBanManager extends Serializable {
 

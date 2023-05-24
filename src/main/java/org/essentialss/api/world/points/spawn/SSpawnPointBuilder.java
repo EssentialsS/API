@@ -16,43 +16,51 @@ public class SSpawnPointBuilder {
     private Collection<SSpawnType> spawnType = new LinkedHashSet<>();
 
     @Deprecated
-    public @Nullable Vector3d point() {
-        if (this.point == null) {
+    @Nullable
+    public Vector3d point() {
+        if (null == this.point) {
             return null;
         }
         return this.point.get();
     }
 
-    public @Nullable Supplier<Vector3d> position() {
+    @Nullable
+    public Supplier<Vector3d> position() {
         return this.point;
     }
 
     @Deprecated
-    public @NotNull SSpawnPointBuilder setPoint(@NotNull Vector3d point) {
-        return setPosition(point);
+    @NotNull
+    public SSpawnPointBuilder setPoint(@NotNull Vector3d point) {
+        return this.setPosition(point);
     }
 
-    public @NotNull SSpawnPointBuilder setPosition(Supplier<Vector3d> position) {
+    @NotNull
+    public SSpawnPointBuilder setPosition(Supplier<Vector3d> position) {
         this.point = position;
         return this;
     }
 
-    public @NotNull SSpawnPointBuilder setPosition(@NotNull Vector3d position) {
+    @NotNull
+    public SSpawnPointBuilder setPosition(@NotNull Vector3d position) {
         this.point = () -> position;
         return this;
     }
 
-    public @NotNull SSpawnPointBuilder setSpawnTypes(@NotNull Collection<SSpawnType> spawnType) {
+    @NotNull
+    public SSpawnPointBuilder setSpawnTypes(@NotNull Collection<SSpawnType> spawnType) {
         this.spawnType = spawnType;
         return this;
     }
 
-    public @NotNull SSpawnPointBuilder setSpawnTypes(@NotNull SSpawnType... spawnTypes) {
+    @NotNull
+    public SSpawnPointBuilder setSpawnTypes(@NotNull SSpawnType... spawnTypes) {
         this.spawnType = Arrays.asList(spawnTypes);
         return this;
     }
 
-    public @NotNull Collection<SSpawnType> spawnTypes() {
+    @NotNull
+    public Collection<SSpawnType> spawnTypes() {
         return this.spawnType;
     }
 }

@@ -22,7 +22,8 @@ public interface MessageManager {
 
     @NotNull Singleton<MessageConfig> config(@NotNull Locale locale);
 
-    default @NotNull Singleton<MessageConfig> config() {
+    @NotNull
+    default Singleton<MessageConfig> config() {
         return this.config(Locale.ENGLISH);
     }
 

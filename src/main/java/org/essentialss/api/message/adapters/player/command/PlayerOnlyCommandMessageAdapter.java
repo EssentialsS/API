@@ -6,9 +6,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface PlayerOnlyCommandMessageAdapter extends MessageAdapter {
 
-    @NotNull Component adaptMessage(@NotNull Component message);
+    @NotNull
+    Component adaptMessage(@NotNull Component message);
 
-    default @NotNull Component adaptMessage() {
+    @NotNull
+    default Component adaptMessage() {
         return this.adaptMessage(this.unadaptedMessage());
     }
 }

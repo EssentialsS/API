@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public interface SGeneralPlayerData extends SGeneralOfflineData {
-    
+
     PlayerTeleportRequest acceptTeleportRequest(@NotNull UUID playerId) throws IllegalStateException;
 
     default PlayerTeleportRequest acceptTeleportRequest(Player player) throws IllegalStateException {
@@ -133,7 +133,7 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
     void setNextToKeyboard();
 
     default void setShownAwayFromKeyboardMessage(boolean value) {
-        hasShownAwayFromKeyboardMessageProperty().setValue(value);
+        this.hasShownAwayFromKeyboardMessageProperty().setValue(value);
     }
 
     @NotNull

@@ -11,11 +11,14 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("i-am-message-adapter")
 public abstract class AbstractCollectionWrapperPlaceholder<T> implements SPlaceHolder<Collection<T>> {
 
     private final SPlaceHolder<T> placeHolder;
-    private final @Nullable String nameOverride;
-    private final @Nullable String typeOverride;
+    @Nullable
+    private final String nameOverride;
+    @Nullable
+    private final String typeOverride;
 
     protected AbstractCollectionWrapperPlaceholder(@NotNull SPlaceHolder<T> placeHolder, @Nullable String tagOverride, @Nullable String nameOverride) {
         this.placeHolder = placeHolder;
@@ -24,7 +27,8 @@ public abstract class AbstractCollectionWrapperPlaceholder<T> implements SPlaceH
     }
 
     @Override
-    public @NotNull Component apply(@NotNull Component message, @NotNull Collection<T> values) {
+    @NotNull
+    public Component apply(@NotNull Component message, @NotNull Collection<T> values) {
         Component mix = null;
         List<T> valueList = new LinkedList<>(values);
         for (int index = 0; index < valueList.size(); index++) {
@@ -47,20 +51,24 @@ public abstract class AbstractCollectionWrapperPlaceholder<T> implements SPlaceH
     }
 
     @Override
-    public abstract @NotNull SPlaceHolder<Collection<T>> copy(@Nullable String placeholderTag, @Nullable String placeholderName);
+    @NotNull
+    public abstract SPlaceHolder<Collection<T>> copy(@Nullable String placeholderTag, @Nullable String placeholderName);
 
     @Override
-    public @NotNull SPlaceHolder<Collection<T>> copyWithTagName(@Nullable String placeholderName) {
+    @NotNull
+    public SPlaceHolder<Collection<T>> copyWithTagName(@Nullable String placeholderName) {
         return this.copy(this.typeOverride, placeholderName);
     }
 
     @Override
-    public @NotNull SPlaceHolder<Collection<T>> copyWithTagType(@Nullable String placeholderTag) {
+    @NotNull
+    public SPlaceHolder<Collection<T>> copyWithTagType(@Nullable String placeholderTag) {
         return this.copy(placeholderTag, this.nameOverride);
     }
 
     @Override
-    public @NotNull String placeholderTagName() {
+    @NotNull
+    public String placeholderTagName() {
         if (null == this.nameOverride) {
             return this.placeHolder.placeholderTagName() + "'s";
         }
@@ -68,21 +76,26 @@ public abstract class AbstractCollectionWrapperPlaceholder<T> implements SPlaceH
     }
 
     @Override
-    public @NotNull String placeholderTagType() {
+    @NotNull
+    public String placeholderTagType() {
         if (null == this.typeOverride) {
             return this.placeHolder.placeholderTagType();
         }
         return this.typeOverride;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public @NotNull Class<Collection> type() {
+    @NotNull
+    public Class<Collection> type() {
         return Collection.class;
     }
 
-    public @NotNull SPlaceHolder<T> placeholder() {
+    @NotNull
+    public SPlaceHolder<T> placeholder() {
         return this.placeHolder;
     }
 
-    protected abstract @NotNull Component suffixJoining();
+    @NotNull
+    protected abstract Component suffixJoining();
 }

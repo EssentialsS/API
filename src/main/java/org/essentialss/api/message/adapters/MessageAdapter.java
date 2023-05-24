@@ -16,16 +16,19 @@ import java.util.Collection;
 public interface MessageAdapter {
 
     interface Enabled extends MessageAdapter {
-        @NotNull SingleConfigValue.Default<Boolean> enabledValue();
+        @NotNull
+        SingleConfigValue.Default<Boolean> enabledValue();
 
         default boolean isEnabled() {
             return this.enabledValue().parseDefault(EssentialsSAPI.get().messageManager().get().config().get());
         }
     }
 
-    @NotNull SingleConfigValue.Default<Component> configValue();
+    @NotNull
+    SingleConfigValue.Default<Component> configValue();
 
-    default @NotNull Component defaultUnadaptedMessage() {
+    @NotNull
+    default Component defaultUnadaptedMessage() {
         return this.configValue().defaultValue();
     }
 
@@ -37,7 +40,9 @@ public interface MessageAdapter {
         loader.save(root);
     }
 
-    @NotNull Collection<SPlaceHolder<?>> supportedPlaceholders();
+    @NotNull
+    Collection<SPlaceHolder<?>> supportedPlaceholders();
 
-    @NotNull Component unadaptedMessage();
+    @NotNull
+    Component unadaptedMessage();
 }

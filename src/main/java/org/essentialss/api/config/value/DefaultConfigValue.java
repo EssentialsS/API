@@ -10,7 +10,8 @@ public interface DefaultConfigValue<T> extends ConfigValue<T> {
 
     T defaultValue();
 
-    default @NotNull T parseDefault(@NotNull ConfigurationNode root) {
+    @NotNull
+    default T parseDefault(@NotNull ConfigurationNode root) {
         T value;
         try {
             value = this.parse(root);
@@ -25,7 +26,8 @@ public interface DefaultConfigValue<T> extends ConfigValue<T> {
     }
 
     @SuppressWarnings("allow-nullable")
-    default @NotNull T parseDefault(@NotNull SConfig config) {
+    @NotNull
+    default T parseDefault(@NotNull SConfig config) {
         try {
             return this.parseDefault(config.configurationLoader().load());
         } catch (ConfigurateException e) {

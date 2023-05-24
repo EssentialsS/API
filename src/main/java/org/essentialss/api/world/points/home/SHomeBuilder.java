@@ -7,24 +7,28 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("allow-nullable")
 public class SHomeBuilder {
 
-    private OfflineLocation location;
     private String home;
+    private OfflineLocation location;
 
-    public @Nullable OfflineLocation point() {
-        return this.location;
-    }
-
-    public @NotNull SHomeBuilder setPoint(@NotNull OfflineLocation point) {
-        this.location = point;
-        return this;
-    }
-
-    public @Nullable String home() {
+    @Nullable
+    public String home() {
         return this.home;
     }
 
-    public @NotNull SHomeBuilder setHome(@NotNull String home) {
+    @Nullable
+    public OfflineLocation point() {
+        return this.location;
+    }
+
+    @NotNull
+    public SHomeBuilder setHome(@NotNull String home) {
         this.home = home;
+        return this;
+    }
+
+    @NotNull
+    public SHomeBuilder setPoint(@NotNull OfflineLocation point) {
+        this.location = point;
         return this;
     }
 }

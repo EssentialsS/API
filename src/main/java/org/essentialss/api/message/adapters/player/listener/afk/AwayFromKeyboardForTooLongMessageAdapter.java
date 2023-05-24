@@ -7,9 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface AwayFromKeyboardForTooLongMessageAdapter extends MessageAdapter.Enabled {
 
-    @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData player);
+    @NotNull
+    Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData player);
 
-    default @NotNull Component adaptMessage(@NotNull SGeneralPlayerData player) {
+    @NotNull
+    default Component adaptMessage(@NotNull SGeneralPlayerData player) {
         return this.adaptMessage(this.unadaptedMessage(), player);
     }
 

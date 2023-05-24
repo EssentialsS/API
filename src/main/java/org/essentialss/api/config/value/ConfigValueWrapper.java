@@ -4,7 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConfigValueWrapper {
 
-    private final @NotNull ConfigValue<?> configValue;
+    @NotNull
+    private final ConfigValue<?> configValue;
 
     public ConfigValueWrapper(@NotNull ConfigValue<?> configValue) {
         this.configValue = configValue;

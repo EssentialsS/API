@@ -11,7 +11,7 @@ import java.util.OptionalInt;
 public interface KitSlot {
 
     default InventoryTransactionResult apply(PlayerInventory inventory) {
-        OptionalInt opSlot = preferredSlotIndex();
+        OptionalInt opSlot = this.preferredSlotIndex();
         Slot slot = null;
         if (opSlot.isPresent()) {
             Slot indexSlot = inventory
@@ -22,7 +22,7 @@ public interface KitSlot {
             }
         }
 
-        ItemStackSnapshot item = item();
+        ItemStackSnapshot item = this.item();
 
         if (null == slot) {
             return inventory.offer(item.createStack());

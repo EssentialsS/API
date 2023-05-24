@@ -18,6 +18,7 @@ import org.essentialss.api.world.points.warp.SWarp;
 import org.essentialss.api.world.points.warp.SWarpBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mose.property.impl.unknown.UnknownProperty;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.world.World;
@@ -63,13 +64,17 @@ public interface SWorldData extends StringIdentifier, Serializable {
 
     Optional<SPreGenData> generatingChunkData();
 
+    UnknownProperty<Boolean, Boolean> isLoadedProperty();
+
     boolean isWorld(@NotNull World<?, ?> world);
 
-    default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull String identifier) {
+    @NotNull
+    default Optional<SJailSpawnPoint> jailPosition(@NotNull String identifier) {
         return this.jailPositions().parallelStream().filter(jail -> jail.identifier().equalsIgnoreCase(identifier)).findAny();
     }
 
-    default @NotNull Optional<SJailSpawnPoint> jailPosition(@NotNull Vector3d blockPosition) {
+    @NotNull
+    default Optional<SJailSpawnPoint> jailPosition(@NotNull Vector3d blockPosition) {
         double distance = Integer.MAX_VALUE;
         SJailSpawnPoint point = null;
         for (SJailSpawnPoint jail : this.jailPositions()) {
@@ -82,7 +87,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return Optional.ofNullable(point);
     }
 
-    default @NotNull UnmodifiableCollection<SJailSpawnPoint> jailPositions() {
+    @NotNull
+    default UnmodifiableCollection<SJailSpawnPoint> jailPositions() {
         return new SingleUnmodifiableCollection<>(this.pointsOf(SJailSpawnPoint.class));
     }
 
@@ -136,11 +142,13 @@ public interface SWorldData extends StringIdentifier, Serializable {
 
     Optional<SPreGenData> setPreGeneratingData(@NotNull Vector3i center, double radius, @Nullable Audience audience);
 
-    default @NotNull SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition) {
+    @NotNull
+    default SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition) {
         return this.spawnPoint(blockPosition, true);
     }
 
-    default @NotNull SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition, boolean ignoreFirstLogin) {
+    @NotNull
+    default SSpawnPoint spawnPoint(@NotNull Vector3d blockPosition, boolean ignoreFirstLogin) {
         double distance = 0;
         SSpawnPoint point = null;
         for (SSpawnPoint spawn : this.spawnPoints()) {
@@ -159,7 +167,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return point;
     }
 
-    default @NotNull UnmodifiableCollection<SSpawnPoint> spawnPoints() {
+    @NotNull
+    default UnmodifiableCollection<SSpawnPoint> spawnPoints() {
         return new SingleUnmodifiableCollection<>(this.pointsOf(SSpawnPoint.class));
     }
 
@@ -170,7 +179,8 @@ public interface SWorldData extends StringIdentifier, Serializable {
         return this.warps().parallelStream().filter(warp -> warp.identifier().equalsIgnoreCase(identifier)).findAny();
     }
 
-    default @NotNull UnmodifiableCollection<SWarp> warps() {
+    @NotNull
+    default UnmodifiableCollection<SWarp> warps() {
         return new SingleUnmodifiableCollection<>(this.pointsOf(SWarp.class));
     }
 

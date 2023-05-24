@@ -7,9 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface CreateWarpMessageAdapter extends MessageAdapter {
 
-    @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SWarp warp);
+    @NotNull
+    Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SWarp warp);
 
-    default @NotNull Component adaptMessage(@NotNull SWarp warp) {
+    @NotNull
+    default Component adaptMessage(@NotNull SWarp warp) {
         return this.adaptMessage(this.defaultUnadaptedMessage(), warp);
     }
 }

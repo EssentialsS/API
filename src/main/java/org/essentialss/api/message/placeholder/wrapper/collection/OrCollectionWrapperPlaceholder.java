@@ -7,23 +7,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+@SuppressWarnings("i-am-message-adapter")
 public class OrCollectionWrapperPlaceholder<T> extends AbstractCollectionWrapperPlaceholder<T> {
 
     public OrCollectionWrapperPlaceholder(@NotNull SPlaceHolder<T> placeHolder) {
         this(placeHolder, null, null);
     }
 
-    public OrCollectionWrapperPlaceholder(@NotNull SPlaceHolder<T> placeHolder, @Nullable String tagOverride, @Nullable String nameOverride) {
+    private OrCollectionWrapperPlaceholder(@NotNull SPlaceHolder<T> placeHolder, @Nullable String tagOverride, @Nullable String nameOverride) {
         super(placeHolder, tagOverride, nameOverride);
     }
 
     @Override
-    public @NotNull SPlaceHolder<Collection<T>> copy(@Nullable String placeholderTag, @Nullable String placeholderName) {
+    @NotNull
+    public SPlaceHolder<Collection<T>> copy(@Nullable String placeholderTag, @Nullable String placeholderName) {
         return new OrCollectionWrapperPlaceholder<>(this.placeholder(), placeholderTag, placeholderName);
     }
 
     @Override
-    protected @NotNull Component suffixJoining() {
+    @NotNull
+    protected Component suffixJoining() {
         return Component.text("or");
     }
 }

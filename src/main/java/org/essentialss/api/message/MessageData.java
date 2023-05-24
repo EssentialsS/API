@@ -6,20 +6,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class MessageData {
 
-    private final @NotNull Component message;
-    private final @NotNull MessageType type = MessageType.CHAT;
+    @NotNull
+    private final Component message;
+    @NotNull
+    private final MessageType type = MessageType.CHAT;
 
 
     public MessageData(@NotNull Component message) {
         this.message = message;
     }
 
-    public @NotNull Component formattedMessage() {
+    @NotNull
+    public Component formattedMessage() {
         //TODO format
         return this.message;
     }
 
-    public @NotNull Component originalMessage() {
+    @NotNull
+    public Component originalMessage() {
         return this.message;
     }
 

@@ -105,6 +105,12 @@ public interface SGeneralUnloadedData extends Serializable {
                 .map(data -> (T) data);
     }
 
+    default boolean hasGodMode() {
+        return this.hasGodModeProperty().safeValue();
+    }
+
+    <P extends Property.ReadOnly<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P hasGodModeProperty();
+
     default boolean hasSetDisplayName() {
         return this.displayNameProperty().value().isPresent();
     }

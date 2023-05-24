@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+@SuppressWarnings("i-am-message-adapter")
 public class AndCollectionWrapperPlaceholder<T> extends AbstractCollectionWrapperPlaceholder<T> {
 
     public AndCollectionWrapperPlaceholder(@NotNull SPlaceHolder<T> placeHolder) {
@@ -18,12 +19,14 @@ public class AndCollectionWrapperPlaceholder<T> extends AbstractCollectionWrappe
     }
 
     @Override
-    public @NotNull SPlaceHolder<Collection<T>> copy(@Nullable String placeholderTag, @Nullable String placeholderName) {
+    @NotNull
+    public SPlaceHolder<Collection<T>> copy(@Nullable String placeholderTag, @Nullable String placeholderName) {
         return new AndCollectionWrapperPlaceholder<>(this.placeholder(), placeholderTag, placeholderName);
     }
 
     @Override
-    protected @NotNull Component suffixJoining() {
+    @NotNull
+    protected Component suffixJoining() {
         return Component.text("and");
     }
 }

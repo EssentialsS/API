@@ -14,8 +14,10 @@ import java.util.Optional;
 
 public class OfflineLocation implements StringIdentifier {
 
-    private final @NotNull SWorldData data;
-    private final @NotNull Vector3d position;
+    @NotNull
+    private final SWorldData data;
+    @NotNull
+    private final Vector3d position;
 
     public OfflineLocation(@NotNull ServerLocation location) {
         this(location.worldKey(), location.position());
@@ -36,41 +38,46 @@ public class OfflineLocation implements StringIdentifier {
         this.position = position;
     }
 
-    public @NotNull Vector3d position() {
-        return this.position;
-    }
-
-    public @NotNull Optional<Location<?, ?>> location() {
-        return this.world().map(world -> world.location(this.position));
-    }
-
-    public @NotNull Optional<World<?, ?>> world() {
-        return this.data.spongeWorld();
-    }
-
-    public @NotNull SWorldData worldData() {
-        return this.data;
-    }
-
-    @Override
-    public @NotNull String identifier() {
-        return this.data.identifier();
-    }
-
     @Override
     public int hashCode() {
-        return Integer.parseInt(this.identifier().hashCode() + "" + this.position.hashCode());
+        return Integer.parseInt(this.identifier().hashCode() + String.valueOf(this.position.hashCode()));
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof OfflineLocation)){
+        if (!(obj instanceof OfflineLocation)) {
             return false;
         }
         OfflineLocation compare = (OfflineLocation) obj;
-        if(!this.identifier().equals(compare.identifier())){
+        if (!this.identifier().equals(compare.identifier())) {
             return false;
         }
         return this.position.equals(compare.position);
+    }
+
+    @Override
+    @NotNull
+    public String identifier() {
+        return this.data.identifier();
+    }
+
+    @NotNull
+    public Optional<Location<?, ?>> location() {
+        return this.world().map(world -> world.location(this.position));
+    }
+
+    @NotNull
+    public Vector3d position() {
+        return this.position;
+    }
+
+    @NotNull
+    public Optional<World<?, ?>> world() {
+        return this.data.spongeWorld();
+    }
+
+    @NotNull
+    public SWorldData worldData() {
+        return this.data;
     }
 }

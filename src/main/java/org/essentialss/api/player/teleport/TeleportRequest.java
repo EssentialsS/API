@@ -14,22 +14,27 @@ import java.util.function.Function;
 
 public interface TeleportRequest extends ObjectSender {
 
-    @NotNull TeleportRequestDirection directionOfTeleport();
-
-    @NotNull Component senderFormattedDisplayName();
-
-    @NotNull Function<SGeneralPlayerData, Location<?, ?>> teleportToLocation();
-
-    @NotNull LocalDateTime sentTime();
-
-    Optional<Duration> validForDuration();
+    @NotNull
+    TeleportRequestDirection directionOfTeleport();
 
     default Optional<LocalDateTime> expiresAt() {
         return this.validForDuration().map(duration -> this.sentTime().plus(duration));
     }
 
     @Override
-    default @NotNull String senderDisplayName() {
+    @NotNull
+    default String senderDisplayName() {
         return PlainTextComponentSerializer.plainText().serialize(this.senderFormattedDisplayName());
     }
+
+    @NotNull
+    Component senderFormattedDisplayName();
+
+    @NotNull
+    LocalDateTime sentTime();
+
+    @NotNull
+    Function<SGeneralPlayerData, Location<?, ?>> teleportToLocation();
+
+    Optional<Duration> validForDuration();
 }

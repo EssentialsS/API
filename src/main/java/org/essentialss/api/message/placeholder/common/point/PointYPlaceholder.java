@@ -12,40 +12,48 @@ public class PointYPlaceholder implements SPlaceHolder<SPoint> {
 
     public static final String TAG_NAME = "y exact";
 
-    private final @NotNull String tag;
-    private final @NotNull String name;
+    @NotNull
+    private final String tag;
+    @NotNull
+    private final String name;
 
     public PointYPlaceholder() {
         this(SPlaceHolders.POINT, TAG_NAME);
     }
 
-    public PointYPlaceholder(@NotNull String tag, @NotNull String name) {
+    private PointYPlaceholder(@NotNull String tag, @NotNull String name) {
         this.tag = tag;
         this.name = name;
     }
 
     @Override
-    public @NotNull Component apply(@NotNull Component message, @NotNull SPoint value) {
-        return message.replaceText(TextReplacementConfig.builder().match(this.formattedPlaceholderTag()).replacement(value.position().y() + "").build());
+    @NotNull
+    public Component apply(@NotNull Component message, @NotNull SPoint value) {
+        return message.replaceText(
+                TextReplacementConfig.builder().match(this.formattedPlaceholderTag()).replacement(String.valueOf(value.position().y())).build());
     }
 
     @Override
-    public @NotNull SPlaceHolder<SPoint> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
+    @NotNull
+    public SPlaceHolder<SPoint> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
         return new PointYPlaceholder(placeholderTag, placeholderName);
     }
 
     @Override
-    public @NotNull String placeholderTagName() {
+    @NotNull
+    public String placeholderTagName() {
         return this.tag;
     }
 
     @Override
-    public @NotNull String placeholderTagType() {
+    @NotNull
+    public String placeholderTagType() {
         return this.name;
     }
 
     @Override
-    public @NotNull Class<SPoint> type() {
+    @NotNull
+    public Class<SPoint> type() {
         return SPoint.class;
     }
 }

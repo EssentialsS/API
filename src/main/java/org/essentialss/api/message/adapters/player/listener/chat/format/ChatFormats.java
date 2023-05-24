@@ -41,11 +41,12 @@ public enum ChatFormats implements ChatFormat {
     }
 
     @Override
-    public @NotNull Component adapt(@NotNull ServerPlayer player,
-                                    @NotNull SGeneralPlayerData playerData,
-                                    @NotNull Audience audience,
-                                    @NotNull Component message,
-                                    @NotNull Component originalMessage) {
+    @NotNull
+    public Component adapt(@NotNull ServerPlayer player,
+                           @NotNull SGeneralPlayerData playerData,
+                           @NotNull Audience audience,
+                           @NotNull Component message,
+                           @NotNull Component originalMessage) {
         return this.wrapper.adapt(player, playerData, audience, message, originalMessage);
     }
 }

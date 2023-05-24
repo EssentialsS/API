@@ -8,9 +8,11 @@ import java.time.Duration;
 
 public interface AwayFromKeyboardBarMessageAdapter extends MessageAdapter.Enabled {
 
-    @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull Duration timeLeft);
+    @NotNull
+    Component adaptMessage(@NotNull Component messageToAdapt, @NotNull Duration timeLeft);
 
-    default @NotNull Component adaptMessage(@NotNull Duration timeLeft) {
+    @NotNull
+    default Component adaptMessage(@NotNull Duration timeLeft) {
         return this.adaptMessage(this.unadaptedMessage(), timeLeft);
     }
 

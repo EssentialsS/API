@@ -11,8 +11,10 @@ import java.util.Optional;
 
 class SPlayerModifierImpl<T> implements SPlayerModifier<T> {
 
-    private final @NotNull String keyName;
-    private final @NotNull Key<Value<T>> key;
+    @NotNull
+    private final String keyName;
+    @NotNull
+    private final Key<Value<T>> key;
 
     SPlayerModifierImpl(@NotNull String keyName, @NotNull Key<Value<T>> key) {
         this.key = key;
@@ -35,7 +37,8 @@ class SPlayerModifierImpl<T> implements SPlayerModifier<T> {
     }
 
     @Override
-    public @NotNull String identifier() {
+    @NotNull
+    public String identifier() {
         return this.keyName;
     }
 }

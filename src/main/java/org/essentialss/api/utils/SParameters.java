@@ -210,7 +210,7 @@ public final class SParameters {
                 return Collections.emptyList();
             }
             Locatable locatable = (Locatable) context.subject();
-            String number = blockLocation ? function.apply(locatable.location()).toString() : (function.apply(locatable.location()).intValue() + "");
+            String number = blockLocation ? function.apply(locatable.location()).toString() : (String.valueOf(function.apply(locatable.location()).intValue()));
             return Collections.singletonList(CommandCompletion.of(number));
         });
     }

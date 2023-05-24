@@ -8,42 +8,50 @@ import org.jetbrains.annotations.NotNull;
 
 public class FullCommandPlaceholder implements SPlaceHolder<String> {
 
-    public static final @NotNull String TAG_NAME = "full";
+    @NotNull
+    public static final String TAG_NAME = "full";
 
-    private final @NotNull String tagName;
-    private final @NotNull String tagType;
+    @NotNull
+    private final String tagName;
+    @NotNull
+    private final String tagType;
 
     public FullCommandPlaceholder() {
         this(SPlaceHolders.COMMAND, TAG_NAME);
     }
 
-    public FullCommandPlaceholder(@NotNull String tagType, @NotNull String tagName) {
+    private FullCommandPlaceholder(@NotNull String tagType, @NotNull String tagName) {
         this.tagName = tagName;
         this.tagType = tagType;
     }
 
     @Override
-    public @NotNull Component apply(@NotNull Component message, @NotNull String value) {
+    @NotNull
+    public Component apply(@NotNull Component message, @NotNull String value) {
         return message.replaceText(TextReplacementConfig.builder().match(this.formattedPlaceholderTag()).replacement(value).build());
     }
 
     @Override
-    public @NotNull SPlaceHolder<String> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
+    @NotNull
+    public SPlaceHolder<String> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
         return new FullCommandPlaceholder(placeholderTag, placeholderName);
     }
 
     @Override
-    public @NotNull String placeholderTagName() {
+    @NotNull
+    public String placeholderTagName() {
         return this.tagName;
     }
 
     @Override
-    public @NotNull String placeholderTagType() {
+    @NotNull
+    public String placeholderTagType() {
         return this.tagType;
     }
 
     @Override
-    public @NotNull Class<?> type() {
+    @NotNull
+    public Class<?> type() {
         return String.class;
     }
 }

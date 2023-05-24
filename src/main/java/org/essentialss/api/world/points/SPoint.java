@@ -9,17 +9,21 @@ import java.util.Optional;
 
 public interface SPoint {
 
-    @NotNull OfflineLocation location();
+    @NotNull
+    OfflineLocation location();
 
-    default @NotNull SWorldData worldData() {
-        return this.location().worldData();
-    }
-
-    default @NotNull Vector3d position() {
+    @NotNull
+    default Vector3d position() {
         return this.location().position();
     }
 
-    default @NotNull Optional<Location<?, ?>> spongeLocation() {
+    @NotNull
+    default Optional<Location<?, ?>> spongeLocation() {
         return this.location().world().map(world -> world.location(this.position()));
+    }
+
+    @NotNull
+    default SWorldData worldData() {
+        return this.location().worldData();
     }
 }
