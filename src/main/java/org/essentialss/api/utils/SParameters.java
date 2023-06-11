@@ -6,6 +6,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.config.value.ConfigValue;
 import org.essentialss.api.config.value.ConfigValueWrapper;
+import org.essentialss.api.group.Group;
 import org.essentialss.api.kit.Kit;
 import org.essentialss.api.message.adapters.MessageAdapter;
 import org.essentialss.api.player.data.SGeneralPlayerData;
@@ -174,6 +175,25 @@ public final class SParameters {
                         .sorted(Comparator.naturalOrder())
                         .map(CommandCompletion::of)
                         .collect(Collectors.toList()));
+    }
+
+    public static Parameter.Value.Builder<Group> group() {
+        return Parameter
+                .builder(Group.class)
+                .addParser((parameterKey, reader, context) -> EssentialsSAPI.get().groupManager().get().group(reader.parseString()))
+                .completer((context, currentInput) -> {
+                    String input = currentInput.toLowerCase();
+                    return EssentialsSAPI
+                            .get()
+                            .groupManager()
+                            .get()
+                            .groups()
+                            .stream()
+                            .map(Group::groupName)
+                            .filter(group -> group.toLowerCase().startsWith(input))
+                            .map(CommandCompletion::of)
+                            .collect(Collectors.toList());
+                });
     }
 
     public static Parameter.Value.Builder<String> hostname() {

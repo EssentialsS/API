@@ -1,6 +1,7 @@
 package org.essentialss.api.kit;
 
 import org.essentialss.api.EssentialsSAPI;
+import org.essentialss.api.group.Group;
 import org.essentialss.api.utils.Singleton;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.spongepowered.api.ResourceKey;
@@ -9,6 +10,8 @@ import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.plugin.PluginContainer;
 
 import java.io.File;
+import java.time.Duration;
+import java.util.Optional;
 
 public interface Kit {
 
@@ -16,6 +19,8 @@ public interface Kit {
         UnmodifiableCollection<KitSlot> kitSlots = this.inventory().get();
         kitSlots.forEach(kitSlot -> kitSlot.apply(inventory));
     }
+
+    Optional<Duration> cooldown(Group group);
 
     ViewableInventory createInventory();
 
@@ -34,5 +39,7 @@ public interface Kit {
     String name();
 
     PluginContainer plugin();
+
+    void setCooldown(Group group, Duration duration);
 
 }

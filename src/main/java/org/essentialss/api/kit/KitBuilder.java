@@ -1,6 +1,7 @@
 package org.essentialss.api.kit;
 
 import org.essentialss.api.EssentialsSAPI;
+import org.essentialss.api.group.Group;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.data.Keys;
@@ -10,6 +11,7 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.entity.PlayerInventory;
 import org.spongepowered.plugin.PluginContainer;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,9 +19,20 @@ import java.util.stream.Collectors;
 public class KitBuilder {
 
     private final Map<ItemStackSnapshot, Integer> kitSlots = new HashMap<>();
+    private final Map<Group, Duration> cooldowns = new HashMap<>();
     private String displayName;
     private String idName;
     private PluginContainer plugin;
+
+    public KitBuilder addCooldown(Group group, Duration duration) {
+        this.cooldowns.put(group, duration);
+        return this;
+    }
+
+    public KitBuilder addCooldowns(Map<Group, Duration> durations) {
+        this.cooldowns.putAll(durations);
+        return this;
+    }
 
     public KitBuilder addKitSlot(@NotNull ItemStackSnapshot item, @Nullable Integer slot) {
         this.kitSlots.put(item, slot);
@@ -41,12 +54,12 @@ public class KitBuilder {
 
     public KitBuilder addKitSlots(@NotNull Inventory inventory) {
         return this.addKitSlots(inventory
-                                 .slots()
-                                 .stream()
-                                 .map(Inventory::peek)
-                                 .filter(item -> !item.equals(ItemStack.empty()))
-                                 .map(ItemStack::createSnapshot)
-                                 .collect(Collectors.toList()));
+                                        .slots()
+                                        .stream()
+                                        .map(Inventory::peek)
+                                        .filter(item -> !item.equals(ItemStack.empty()))
+                                        .map(ItemStack::createSnapshot)
+                                        .collect(Collectors.toList()));
     }
 
     public KitBuilder addKitSlots(@NotNull Iterable<ItemStackSnapshot> items) {
@@ -58,6 +71,10 @@ public class KitBuilder {
 
     public String displayName() {
         return this.displayName;
+    }
+
+    public Map<Group, Duration> getCooldowns() {
+        return this.cooldowns;
     }
 
     public String idName() {

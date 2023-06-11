@@ -74,6 +74,12 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
 
     <P extends Property.ReadOnly<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P isShowingAwayFromKeyboardProperty();
 
+    default Optional<LocalDateTime> kitCooldownRelease() {
+        return this.kitCooldownReleaseProperty().value();
+    }
+
+    Property.Write<LocalDateTime, LocalDateTime> kitCooldownReleaseProperty();
+
     Property.Write<LocalDateTime, LocalDateTime> lastActionProperty();
 
     default LocalDateTime lastPlayerAction() {
@@ -104,6 +110,14 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
         this.setBarUntilKick(null);
     }
 
+    default void removeKitCooldown() {
+        this.setKitCooldownRelease(null);
+    }
+
+    default void removeViewingInventoryOf() {
+        this.setViewingInventoryOf(null);
+    }
+
     void sendMessageTo(@NotNull MessageData data);
 
     default void setAwayFromKeyboard() {
@@ -130,10 +144,18 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
 
     void setBarUntilKick(@Nullable BossBar bar);
 
+    default void setKitCooldownRelease(@Nullable LocalDateTime time) {
+        this.kitCooldownReleaseProperty().setValue(time);
+    }
+
     void setNextToKeyboard();
 
     default void setShownAwayFromKeyboardMessage(boolean value) {
         this.hasShownAwayFromKeyboardMessageProperty().setValue(value);
+    }
+
+    default void setViewingInventoryOf(UUID uuid) {
+        this.viewingInventoryOfProperty().setValue(uuid);
     }
 
     @NotNull
@@ -197,6 +219,12 @@ public interface SGeneralPlayerData extends SGeneralOfflineData {
     default UUID uuid() {
         return this.spongePlayer().uniqueId();
     }
+
+    default Optional<UUID> viewingInventoryOf() {
+        return this.viewingInventoryOfProperty().value();
+    }
+
+    Property.Write<UUID, UUID> viewingInventoryOfProperty();
 
     @NotNull
     SWorldData world();

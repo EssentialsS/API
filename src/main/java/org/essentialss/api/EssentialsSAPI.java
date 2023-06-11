@@ -2,6 +2,7 @@ package org.essentialss.api;
 
 import org.essentialss.api.ban.SBanManager;
 import org.essentialss.api.config.SConfigManager;
+import org.essentialss.api.group.GroupManager;
 import org.essentialss.api.kit.KitManager;
 import org.essentialss.api.message.MessageManager;
 import org.essentialss.api.player.SPlayerManager;
@@ -15,21 +16,32 @@ import java.util.Collection;
 
 public interface EssentialsSAPI {
 
-    @NotNull Singleton<SBanManager> banManager();
+    @NotNull
+    Singleton<SBanManager> banManager();
 
-    @NotNull Singleton<SConfigManager> configManager();
+    @NotNull
+    Singleton<SConfigManager> configManager();
 
-    @NotNull PluginContainer container();
+    @NotNull
+    PluginContainer container();
 
-    @NotNull Singleton<KitManager> kitManager();
+    @NotNull
+    Singleton<GroupManager> groupManager();
 
-    @NotNull Singleton<MessageManager> messageManager();
+    @NotNull
+    Singleton<KitManager> kitManager();
 
-    @NotNull Collection<ParameterAdapter> parameterAdapters();
+    @NotNull
+    Singleton<MessageManager> messageManager();
 
-    @NotNull Singleton<SPlayerManager> playerManager();
+    @NotNull
+    Collection<ParameterAdapter> parameterAdapters();
 
-    @NotNull Singleton<SWorldManager> worldManager();
+    @NotNull
+    Singleton<SPlayerManager> playerManager();
+
+    @NotNull
+    Singleton<SWorldManager> worldManager();
 
     static EssentialsSAPI get() {
         return EssentialsSAPIGetter.API.get();

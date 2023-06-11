@@ -29,5 +29,7 @@ public interface KitManager {
 
     void save(@NotNull Kit kit) throws ConfigurateException;
 
+    void unregister(@NotNull Kit kit);
+
 
 }
