@@ -11,40 +11,47 @@ public class ConsoleNicknamePlaceholder implements SPlaceHolder<SystemSubject> {
 
     public static final String TAG_NAME = "nickname";
 
-    private final @NotNull String tag;
-    private final @NotNull String name;
+    @NotNull
+    private final String tag;
+    @NotNull
+    private final String name;
 
     public ConsoleNicknamePlaceholder() {
         this(SPlaceHolders.PLAYER, TAG_NAME);
     }
 
-    public ConsoleNicknamePlaceholder(@NotNull String tag, @NotNull String name) {
+    private ConsoleNicknamePlaceholder(@NotNull String tag, @NotNull String name) {
         this.tag = tag;
         this.name = name;
     }
 
     @Override
-    public @NotNull Component apply(@NotNull Component message, @NotNull SystemSubject player) {
+    @NotNull
+    public Component apply(@NotNull Component message, @NotNull SystemSubject player) {
         return message.replaceText(TextReplacementConfig.builder().match(this.formattedPlaceholderTag()).replacement("console").build());
     }
 
     @Override
-    public @NotNull SPlaceHolder<SystemSubject> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
+    @NotNull
+    public SPlaceHolder<SystemSubject> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
         return new ConsoleNicknamePlaceholder(placeholderTag, placeholderName);
     }
 
     @Override
-    public @NotNull String placeholderTagName() {
+    @NotNull
+    public String placeholderTagName() {
         return this.name;
     }
 
     @Override
-    public @NotNull String placeholderTagType() {
+    @NotNull
+    public String placeholderTagType() {
         return this.tag;
     }
 
     @Override
-    public @NotNull Class<SystemSubject> type() {
+    @NotNull
+    public Class<SystemSubject> type() {
         return SystemSubject.class;
     }
 }

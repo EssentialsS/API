@@ -7,24 +7,28 @@ import org.spongepowered.math.vector.Vector3d;
 @SuppressWarnings("allow-nullable")
 public class SWarpBuilder {
 
-    private Vector3d point;
     private String name;
+    private Vector3d point;
 
-    public @Nullable Vector3d point() {
-        return this.point;
-    }
-
-    public @NotNull SWarpBuilder setPoint(@NotNull Vector3d point) {
-        this.point = point;
-        return this;
-    }
-
-    public @Nullable String name() {
+    @Nullable
+    public String name() {
         return this.name;
     }
 
-    public @NotNull SWarpBuilder setName(@NotNull String name) {
+    @Nullable
+    public Vector3d point() {
+        return this.point;
+    }
+
+    @NotNull
+    public SWarpBuilder setName(@NotNull String name) {
         this.name = name;
+        return this;
+    }
+
+    @NotNull
+    public SWarpBuilder setPoint(@NotNull Vector3d point) {
+        this.point = point;
         return this;
     }
 }

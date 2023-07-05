@@ -11,7 +11,8 @@ public interface VanillaMessageAdapter extends MessageAdapter.Enabled {
         return this.useVanilla().parseDefault(EssentialsSAPI.get().messageManager().get().config().get());
     }
 
-    @NotNull SingleConfigValue.Default<Boolean> useVanilla();
+    @NotNull
+    SingleConfigValue.Default<Boolean> useVanilla();
 
 
 }

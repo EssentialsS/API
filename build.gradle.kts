@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation("com.github.mosemister:DataProperties:master-SNAPSHOT")
-    implementation("org.spongepowered:spongeapi:8.0.0")
+    implementation("org.spongepowered:spongeapi:8.1.0")
 }
 
 val javaTarget = 8 // Sponge targets a minimum of Java 8

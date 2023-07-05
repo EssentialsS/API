@@ -2,8 +2,8 @@ package org.essentialss.api.message.adapters.player.listener.chat;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import org.essentialss.api.message.adapters.MessageAdapter;
 import org.essentialss.api.message.adapters.player.listener.chat.format.ChatFormat;
+import org.essentialss.api.message.adapters.MessageAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 

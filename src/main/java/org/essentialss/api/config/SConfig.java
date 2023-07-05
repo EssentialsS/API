@@ -15,9 +15,8 @@ import java.util.function.Supplier;
 
 public interface SConfig {
 
-    @NotNull Collection<ConfigValue<?>> expectedNodes();
-
-    default @NotNull ConfigurationLoader<? extends ConfigurationNode> configurationLoader() {
+    @NotNull
+    default ConfigurationLoader<? extends ConfigurationNode> configurationLoader() {
         File file = this.file();
         String name = file.getName();
         if (name.endsWith(".conf")) {
@@ -29,7 +28,11 @@ public interface SConfig {
         throw new RuntimeException("Unsupported filetype of " + name.substring(name.lastIndexOf(".")));
     }
 
-    @NotNull File file();
+    @NotNull
+    Collection<ConfigValue<?>> expectedNodes();
+
+    @NotNull
+    File file();
 
     default void generateDefault() throws ConfigurateException {
         this.file().delete();

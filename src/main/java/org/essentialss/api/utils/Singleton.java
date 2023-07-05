@@ -7,8 +7,10 @@ import java.util.function.Supplier;
 
 public class Singleton<T> {
 
-    private final @NotNull Supplier<T> getter;
-    private @Nullable T cached;
+    @NotNull
+    private final Supplier<T> getter;
+    @Nullable
+    private T cached;
 
     public Singleton(@NotNull Supplier<T> getter) {
         this.getter = getter;

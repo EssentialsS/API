@@ -1,7 +1,7 @@
 package org.essentialss.api.kit;
 
-import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.EssentialsSAPI;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
@@ -28,6 +28,8 @@ public interface KitManager {
     void reloadKits();
 
     void save(@NotNull Kit kit) throws ConfigurateException;
+
+    void unregister(@NotNull Kit kit);
 
 
 }

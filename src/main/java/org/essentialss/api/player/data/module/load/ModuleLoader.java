@@ -1,7 +1,7 @@
 package org.essentialss.api.player.data.module.load;
 
-import org.essentialss.api.player.data.module.SerializableModuleData;
 import org.essentialss.api.utils.identifier.StringIdentifier;
+import org.essentialss.api.player.data.module.SerializableModuleData;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;

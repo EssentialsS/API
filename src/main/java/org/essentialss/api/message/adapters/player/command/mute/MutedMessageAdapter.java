@@ -8,9 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface MutedMessageAdapter extends MessageAdapter {
 
-    @NotNull Component adaptMessage(@NotNull Component message, @NotNull SGeneralUnloadedData playerData, @NotNull MuteType... types);
+    @NotNull
+    Component adaptMessage(@NotNull Component message, @NotNull SGeneralUnloadedData playerData, @NotNull MuteType... types);
 
-    default @NotNull Component adaptMessage(@NotNull SGeneralUnloadedData playerData, @NotNull MuteType... types) {
+    @NotNull
+    default Component adaptMessage(@NotNull SGeneralUnloadedData playerData, @NotNull MuteType... types) {
         return this.adaptMessage(this.unadaptedMessage(), playerData, types);
     }
 

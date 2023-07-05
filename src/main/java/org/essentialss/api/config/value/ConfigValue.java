@@ -9,13 +9,16 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 public interface ConfigValue<T> {
 
-    @NotNull Object[] nodes();
+    @NotNull
+    Object[] nodes();
 
     @SuppressWarnings("allow-nullable")
-    @Nullable T parse(@NotNull ConfigurationNode root) throws SerializationException;
+    @Nullable
+    T parse(@NotNull ConfigurationNode root) throws SerializationException;
 
     @SuppressWarnings("allow-nullable")
-    default @Nullable T parse(@NotNull SConfig config) throws SerializationException {
+    @Nullable
+    default T parse(@NotNull SConfig config) throws SerializationException {
         try {
             return this.parse(config.configurationLoader().load());
         } catch (SerializationException e) {
@@ -31,5 +34,6 @@ public interface ConfigValue<T> {
 
     void set(@NotNull ConfigurationNode root, @Nullable T value) throws SerializationException;
 
-    @NotNull Class<?> type();
+    @NotNull
+    Class<?> type();
 }

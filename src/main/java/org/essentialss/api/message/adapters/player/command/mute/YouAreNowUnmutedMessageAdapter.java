@@ -7,9 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface YouAreNowUnmutedMessageAdapter extends MessageAdapter {
 
-    @NotNull Component adaptMessage(@NotNull Component message, @NotNull MuteType... types);
+    @NotNull
+    Component adaptMessage(@NotNull Component message, @NotNull MuteType... types);
 
-    default @NotNull Component adaptMessage(@NotNull MuteType... types) {
+    @NotNull
+    default Component adaptMessage(@NotNull MuteType... types) {
         return this.adaptMessage(this.unadaptedMessage(), types);
     }
 }

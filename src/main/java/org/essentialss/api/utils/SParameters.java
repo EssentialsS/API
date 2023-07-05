@@ -3,17 +3,18 @@ package org.essentialss.api.utils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.config.value.ConfigValue;
 import org.essentialss.api.config.value.ConfigValueWrapper;
-import org.essentialss.api.kit.Kit;
-import org.essentialss.api.message.adapters.MessageAdapter;
-import org.essentialss.api.player.data.SGeneralPlayerData;
-import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.utils.lamda.ThrowableFunction;
 import org.essentialss.api.utils.parameter.ParameterAdapter;
 import org.essentialss.api.world.SWorldData;
 import org.essentialss.api.world.SWorldManager;
+import org.essentialss.api.EssentialsSAPI;
+import org.essentialss.api.group.Group;
+import org.essentialss.api.kit.Kit;
+import org.essentialss.api.message.adapters.MessageAdapter;
+import org.essentialss.api.player.data.SGeneralPlayerData;
+import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.world.points.spawn.SSpawnType;
 import org.essentialss.api.world.points.warp.SWarp;
 import org.jetbrains.annotations.NotNull;
@@ -176,6 +177,25 @@ public final class SParameters {
                         .collect(Collectors.toList()));
     }
 
+    public static Parameter.Value.Builder<Group> group() {
+        return Parameter
+                .builder(Group.class)
+                .addParser((parameterKey, reader, context) -> EssentialsSAPI.get().groupManager().get().group(reader.parseString()))
+                .completer((context, currentInput) -> {
+                    String input = currentInput.toLowerCase();
+                    return EssentialsSAPI
+                            .get()
+                            .groupManager()
+                            .get()
+                            .groups()
+                            .stream()
+                            .map(Group::groupName)
+                            .filter(group -> group.toLowerCase().startsWith(input))
+                            .map(CommandCompletion::of)
+                            .collect(Collectors.toList());
+                });
+    }
+
     public static Parameter.Value.Builder<String> hostname() {
         return Parameter.string().completer(HOSTNAME_COMPLETER).addParser(combine(IP_V4, IP_V6, URL));
     }
@@ -210,7 +230,7 @@ public final class SParameters {
                 return Collections.emptyList();
             }
             Locatable locatable = (Locatable) context.subject();
-            String number = blockLocation ? function.apply(locatable.location()).toString() : (function.apply(locatable.location()).intValue() + "");
+            String number = blockLocation ? function.apply(locatable.location()).toString() : (String.valueOf(function.apply(locatable.location()).intValue()));
             return Collections.singletonList(CommandCompletion.of(number));
         });
     }

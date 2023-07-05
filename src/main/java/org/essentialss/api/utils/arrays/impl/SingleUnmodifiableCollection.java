@@ -11,6 +11,11 @@ public final class SingleUnmodifiableCollection<T> implements UnmodifiableCollec
 
     private final Collection<T> collection;
 
+    @SafeVarargs
+    public SingleUnmodifiableCollection(T... array) {
+        this(Arrays.asList(array));
+    }
+
     public SingleUnmodifiableCollection(Collection<T> collection) {
         this.collection = Collections.unmodifiableCollection(collection);
     }
@@ -56,6 +61,7 @@ public final class SingleUnmodifiableCollection<T> implements UnmodifiableCollec
         return this.collection.hashCode();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         return this.collection.equals(o);
@@ -83,12 +89,13 @@ public final class SingleUnmodifiableCollection<T> implements UnmodifiableCollec
     }
 
     @Override
-    public @NotNull Object[] toArray() {
+    @NotNull
+    public Object[] toArray() {
         return this.collection.toArray();
     }
 
     @Override
-    public <T1> @NotNull T1[] toArray(@NotNull T1[] t1s) {
+    public <T1> T1[] toArray(@NotNull T1[] t1s) {
         return this.collection.toArray(t1s);
     }
 

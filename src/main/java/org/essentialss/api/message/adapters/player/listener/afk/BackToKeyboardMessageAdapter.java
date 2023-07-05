@@ -7,9 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface BackToKeyboardMessageAdapter extends MessageAdapter.Enabled {
 
-    @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData backPlayer);
+    @NotNull
+    Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData backPlayer);
 
-    default @NotNull Component adaptMessage(@NotNull SGeneralPlayerData backPlayer) {
+    @NotNull
+    default Component adaptMessage(@NotNull SGeneralPlayerData backPlayer) {
         return this.adaptMessage(this.unadaptedMessage(), backPlayer);
     }
 

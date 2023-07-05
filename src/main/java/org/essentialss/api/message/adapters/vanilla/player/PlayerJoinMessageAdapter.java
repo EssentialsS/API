@@ -9,7 +9,8 @@ public interface PlayerJoinMessageAdapter extends VanillaMessageAdapter {
 
     @NotNull Component adaptMessage(@NotNull Component messageToAdapt, @NotNull SGeneralPlayerData playerData);
 
-    default @NotNull Component adaptMessage(@NotNull SGeneralPlayerData playerData) {
+    @NotNull
+    default Component adaptMessage(@NotNull SGeneralPlayerData playerData) {
         return this.adaptMessage(this.defaultUnadaptedMessage(), playerData);
     }
 }

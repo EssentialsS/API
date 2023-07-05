@@ -2,6 +2,7 @@ package org.essentialss.api.utils.friendly;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.api.util.Nameable;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -9,7 +10,14 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings("i-am-message-adapter")
 public enum FriendlyStrings implements FriendlyString {
+    NAMEABLE((obj) -> {
+        if (!(obj instanceof Nameable)) {
+            throw new IllegalArgumentException("unsupported type of " + obj.getClass().getSimpleName() + ". Must be Namable");
+        }
+        return ((Nameable) obj).name();
+    }, Nameable.class),
     DURATION((obj) -> {
         if (!(obj instanceof Duration)) {
             throw new IllegalArgumentException("unsupported type of " + obj.getClass().getSimpleName() + ". Must be Duration");
@@ -66,17 +74,20 @@ public enum FriendlyStrings implements FriendlyString {
     }
 
     @Override
-    public @NotNull Class<?>[] supportedTypes() {
+    @NotNull
+    public Class<?>[] supportedTypes() {
         return this.supportedTypes;
     }
 
     @Override
-    public @NotNull Component toFriendlyComponent(@NotNull Object value) {
+    @NotNull
+    public Component toFriendlyComponent(@NotNull Object value) {
         return this.toComponent.apply(value);
     }
 
     @Override
-    public @NotNull String toFriendlyString(@NotNull Object value) {
+    @NotNull
+    public String toFriendlyString(@NotNull Object value) {
         return this.toString.apply(value);
     }
 

@@ -14,11 +14,13 @@ public interface SPlaceHolder<T> {
 
     @NotNull SPlaceHolder<T> copy(@NotNull String placeholderTag, @NotNull String placeholderName);
 
-    default @NotNull SPlaceHolder<T> copyWithTagName(@NotNull String placeholderName) {
+    @NotNull
+    default SPlaceHolder<T> copyWithTagName(@NotNull String placeholderName) {
         return this.copy(this.placeholderTag(), placeholderName);
     }
 
-    default @NotNull SPlaceHolder<T> copyWithTagType(@NotNull String placeholderTag) {
+    @NotNull
+    default SPlaceHolder<T> copyWithTagType(@NotNull String placeholderTag) {
         return this.copy(placeholderTag, this.placeholderTagName());
     }
 

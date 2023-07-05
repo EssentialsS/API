@@ -21,6 +21,7 @@ public final class UnmodifiableCollectors {
 
     public static <T> UnmodifiableCollector<T, LinkedTransferQueue<T>, UnmodifiableCollection<T>> asUnordered() {
         return new UnmodifiableCollector<>(LinkedTransferQueue::new, queue -> {
+            //noinspection StatementWithEmptyBody
             while (queue.hasWaitingConsumer()) {
             }
             return new SingleUnmodifiableCollection<>(queue);

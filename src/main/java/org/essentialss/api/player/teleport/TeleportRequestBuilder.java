@@ -13,68 +13,85 @@ import java.util.function.Function;
 @SuppressWarnings("allow-nullable")
 public class TeleportRequestBuilder {
 
-    private Function<SGeneralPlayerData, Location<?, ?>> to;
     private TeleportRequestDirection direction;
     private Object sender;
     private String senderDisplayName;
+    private Function<SGeneralPlayerData, Location<?, ?>> to;
     private Duration validForLength;
 
-    public @Nullable Function<SGeneralPlayerData, Location<?, ?>> getTo() {
-        return this.to;
-    }
-
-    public @NotNull TeleportRequestBuilder setTo(@NotNull Function<SGeneralPlayerData, Location<?, ?>> to) {
-        this.to = to;
-        return this;
-    }
-
-    public @Nullable TeleportRequestDirection getDirection() {
+    @Nullable
+    public TeleportRequestDirection getDirection() {
         return this.direction;
     }
 
-    public @NotNull TeleportRequestBuilder setDirection(@NotNull TeleportRequestDirection direction) {
+    @NotNull
+    public TeleportRequestBuilder setDirection(@NotNull TeleportRequestDirection direction) {
         this.direction = direction;
         return this;
     }
 
-    public @Nullable Object getSender() {
+    @Nullable
+    public Object getSender() {
         return this.sender;
     }
 
-    public @NotNull TeleportRequestBuilder setSender(@NotNull Object sender) {
+    @NotNull
+    public TeleportRequestBuilder setSender(@NotNull Object sender) {
         this.sender = sender;
         return this;
     }
 
-    public @NotNull TeleportRequestBuilder setSender(@NotNull Nameable player) {
+    @NotNull
+    public TeleportRequestBuilder setSender(@NotNull Nameable player) {
         this.sender = player;
         this.senderDisplayName = player.name();
         return this;
     }
 
-    public @Nullable String getSenderDisplayName() {
+    @Nullable
+    public String getSenderDisplayName() {
         return this.senderDisplayName;
     }
 
-    public @NotNull TeleportRequestBuilder setSenderDisplayName(@NotNull String senderDisplayName) {
+    @NotNull
+    public TeleportRequestBuilder setSenderDisplayName(@NotNull String senderDisplayName) {
         this.senderDisplayName = senderDisplayName;
         return this;
     }
 
-    public @Nullable Duration getValidForLength() {
+    @Nullable
+    public Function<SGeneralPlayerData, Location<?, ?>> getTo() {
+        return this.to;
+    }
+
+    @NotNull
+    public TeleportRequestBuilder setTo(@NotNull Function<SGeneralPlayerData, Location<?, ?>> to) {
+        this.to = to;
+        return this;
+    }
+
+    @Nullable
+    public Duration getValidForLength() {
         return this.validForLength;
     }
 
-    public @NotNull TeleportRequestBuilder setValidForLength(@Nullable Duration validForLength) {
+    @NotNull
+    public TeleportRequestBuilder setValidForLength(@Nullable Duration validForLength) {
         this.validForLength = validForLength;
         return this;
     }
 
-    public @NotNull TeleportRequestBuilder setNeverExpires() {
-        return this.setValidForLength(null);
+    @NotNull
+    public TeleportRequestBuilder requestTowardsHolder(@NotNull Nameable sender) {
+        this.setSender(sender);
+        this.to = ((player2) -> player2.spongePlayer().location());
+        this.validForLength = Duration.ofMinutes(1);
+        this.direction = TeleportRequestDirection.TOWARDS_REQUEST_HOLDER;
+        return this;
     }
 
-    public @NotNull TeleportRequestBuilder requestTowardsSender(@NotNull Player sender) {
+    @NotNull
+    public TeleportRequestBuilder requestTowardsSender(@NotNull Player sender) {
         this.setSender(sender);
         this.to = ((player2) -> sender.location());
         this.validForLength = Duration.ofMinutes(1);
@@ -82,11 +99,8 @@ public class TeleportRequestBuilder {
         return this;
     }
 
-    public @NotNull TeleportRequestBuilder requestTowardsHolder(@NotNull Nameable sender) {
-        this.setSender(sender);
-        this.to = ((player2) -> player2.spongePlayer().location());
-        this.validForLength = Duration.ofMinutes(1);
-        this.direction = TeleportRequestDirection.TOWARDS_REQUEST_HOLDER;
-        return this;
+    @NotNull
+    public TeleportRequestBuilder setNeverExpires() {
+        return this.setValidForLength(null);
     }
 }

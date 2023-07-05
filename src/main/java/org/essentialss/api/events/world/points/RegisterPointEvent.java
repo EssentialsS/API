@@ -7,7 +7,8 @@ import org.spongepowered.api.event.Event;
 
 public interface RegisterPointEvent extends Event {
 
-    @NotNull SPoint point();
+    @NotNull
+    SPoint point();
 
     interface Pre extends RegisterPointEvent, Cancellable {
 

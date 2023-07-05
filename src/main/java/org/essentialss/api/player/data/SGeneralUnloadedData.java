@@ -6,7 +6,6 @@ import org.essentialss.api.message.MuteType;
 import org.essentialss.api.player.data.module.ModuleData;
 import org.essentialss.api.player.data.module.SerializableModuleData;
 import org.essentialss.api.player.mail.MailMessage;
-import org.essentialss.api.player.mail.MailMessageBuilder;
 import org.essentialss.api.utils.arrays.OrderedUnmodifiableCollection;
 import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.utils.arrays.impl.SingleOrderedUnmodifiableCollection;
@@ -14,6 +13,7 @@ import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
 import org.essentialss.api.world.points.OfflineLocation;
 import org.essentialss.api.world.points.home.SHome;
 import org.essentialss.api.world.points.home.SHomeBuilder;
+import org.essentialss.api.player.mail.MailMessageBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mose.property.CollectionProperty;
@@ -104,6 +104,12 @@ public interface SGeneralUnloadedData extends Serializable {
                 .findAny()
                 .map(data -> (T) data);
     }
+
+    default boolean hasGodMode() {
+        return this.hasGodModeProperty().safeValue();
+    }
+
+    <P extends Property.ReadOnly<Boolean, Boolean> & Property.NeverNull<Boolean, Boolean>> P hasGodModeProperty();
 
     default boolean hasSetDisplayName() {
         return this.displayNameProperty().value().isPresent();

@@ -10,7 +10,8 @@ public final class CrossSpongePlatformUtils {
         throw new RuntimeException("Should not create");
     }
 
-    public static @NotNull Engine spongeEngine() {
+    @NotNull
+    public static Engine spongeEngine() {
         if (Sponge.isServerAvailable()) {
             return Sponge.server();
         }

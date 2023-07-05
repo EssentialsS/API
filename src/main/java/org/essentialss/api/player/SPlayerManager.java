@@ -1,13 +1,13 @@
 package org.essentialss.api.player;
 
+import org.essentialss.api.utils.arrays.UnmodifiableCollection;
+import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
 import org.essentialss.api.EssentialsSAPI;
 import org.essentialss.api.player.data.SGeneralOfflineData;
 import org.essentialss.api.player.data.SGeneralPlayerData;
 import org.essentialss.api.player.data.SGeneralUnloadedData;
 import org.essentialss.api.player.data.module.load.ModuleLoader;
-import org.essentialss.api.utils.arrays.UnmodifiableCollectors;
 import org.essentialss.api.utils.arrays.impl.SingleUnmodifiableCollection;
-import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -36,9 +36,11 @@ public interface SPlayerManager {
         return new SingleUnmodifiableCollection<>(Sponge.server().onlinePlayers().stream().map(this::dataFor).collect(Collectors.toList()));
     }
 
-    @NotNull SGeneralOfflineData dataFor(@NotNull User user);
+    @NotNull
+    SGeneralOfflineData dataFor(@NotNull User user);
 
-    @NotNull SGeneralUnloadedData dataFor(@NotNull GameProfile profile);
+    @NotNull
+    SGeneralUnloadedData dataFor(@NotNull GameProfile profile);
 
     default Optional<SGeneralUnloadedData> dataFor(@NotNull UUID uuid) {
         if (!Sponge.isServerAvailable()) {
@@ -47,9 +49,11 @@ public interface SPlayerManager {
         return Sponge.server().gameProfileManager().cache().findById(uuid).map(this::dataFor);
     }
 
-    @NotNull SGeneralPlayerData dataFor(@NotNull Player player);
+    @NotNull
+    SGeneralPlayerData dataFor(@NotNull Player player);
 
-    @NotNull Collection<ModuleLoader<?, ?>> dataLoaders();
+    @NotNull
+    Collection<ModuleLoader<?, ?>> dataLoaders();
 
     void register(@NotNull ModuleLoader<?, ?> loader);
 
@@ -68,9 +72,10 @@ public interface SPlayerManager {
             return future;
         }
         UserManager manager = Sponge.server().userManager();
-        CompletableFuture[] users = manager.streamAll().map(manager::load).toArray(CompletableFuture[]::new);
+        @SuppressWarnings("rawtypes") CompletableFuture[] users = manager.streamAll().map(manager::load).toArray(CompletableFuture[]::new);
         return CompletableFuture.allOf(users).thenApply(v -> {
             Collection<SGeneralOfflineData> ret = new LinkedHashSet<>();
+            //noinspection rawtypes
             for (CompletableFuture future : users) {
                 Optional<User> opUser;
                 try {

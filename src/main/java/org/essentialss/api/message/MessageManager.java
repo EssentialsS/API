@@ -2,9 +2,9 @@ package org.essentialss.api.message;
 
 import net.kyori.adventure.text.Component;
 import org.essentialss.api.config.configs.MessageConfig;
+import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.essentialss.api.message.placeholder.SPlaceHolder;
 import org.essentialss.api.utils.Singleton;
-import org.essentialss.api.utils.arrays.UnmodifiableCollection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -22,7 +22,8 @@ public interface MessageManager {
 
     @NotNull Singleton<MessageConfig> config(@NotNull Locale locale);
 
-    default @NotNull Singleton<MessageConfig> config() {
+    @NotNull
+    default Singleton<MessageConfig> config() {
         return this.config(Locale.ENGLISH);
     }
 

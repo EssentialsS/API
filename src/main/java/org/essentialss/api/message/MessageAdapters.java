@@ -16,6 +16,14 @@ import org.essentialss.api.message.adapters.player.listener.chat.ChatMessageAdap
 import org.essentialss.api.message.adapters.player.listener.spy.CommandSpyMessageAdapter;
 import org.essentialss.api.message.adapters.vanilla.player.PlayerJoinMessageAdapter;
 import org.essentialss.api.message.adapters.warp.CreateWarpMessageAdapter;
+import org.essentialss.api.message.adapters.world.NoWorldByThatKeyMessageAdapter;
+import org.essentialss.api.message.adapters.world.WorldHasAlreadyLoadedMessageAdapter;
+import org.essentialss.api.message.adapters.world.create.CreatedWorldMessageAdapter;
+import org.essentialss.api.message.adapters.world.create.CreatingWorldMessageAdapter;
+import org.essentialss.api.message.adapters.world.load.LoadedWorldMessageAdapter;
+import org.essentialss.api.message.adapters.world.load.LoadingWorldMessageAdapter;
+import org.essentialss.api.message.adapters.world.unload.UnloadedWorldMessageAdapter;
+import org.essentialss.api.message.adapters.world.unload.UnloadingWorldMessageAdapter;
 import org.essentialss.api.utils.Singleton;
 
 import java.util.stream.Stream;
@@ -38,7 +46,17 @@ public interface MessageAdapters {
 
     Singleton<CreateWarpMessageAdapter> createWarp();
 
+    Singleton<CreatedWorldMessageAdapter> createdWorld();
+
+    Singleton<CreatingWorldMessageAdapter> creatingWorld();
+
+    Singleton<LoadedWorldMessageAdapter> loadedWorld();
+
+    Singleton<LoadingWorldMessageAdapter> loadingWorld();
+
     Singleton<MutedMessageAdapter> muted();
+
+    Singleton<NoWorldByThatKeyMessageAdapter> noWorldByThatKey();
 
     Singleton<PingMessageAdapter> ping();
 
@@ -46,9 +64,15 @@ public interface MessageAdapters {
 
     Singleton<PlayerOnlyCommandMessageAdapter> playerOnlyCommand();
 
+    Singleton<UnloadedWorldMessageAdapter> unloadWorld();
+
+    Singleton<UnloadingWorldMessageAdapter> unloadingWorld();
+
     Singleton<UnmutedMessageAdapter> unmuted();
 
     Singleton<WhoIsMessageAdapter> whoIs();
+
+    Singleton<WorldHasAlreadyLoadedMessageAdapter> worldHasAlreadyLoaded();
 
     Singleton<YouAreNowMutedMessageAdapter> youAreNowMuted();
 

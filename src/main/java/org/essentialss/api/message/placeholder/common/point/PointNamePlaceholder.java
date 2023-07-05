@@ -2,30 +2,33 @@ package org.essentialss.api.message.placeholder.common.point;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import org.essentialss.api.message.placeholder.SPlaceHolder;
-import org.essentialss.api.message.placeholder.SPlaceHolders;
 import org.essentialss.api.utils.identifier.StringIdentifier;
 import org.essentialss.api.world.points.SPoint;
+import org.essentialss.api.message.placeholder.SPlaceHolder;
+import org.essentialss.api.message.placeholder.SPlaceHolders;
 import org.jetbrains.annotations.NotNull;
 
 public class PointNamePlaceholder implements SPlaceHolder<SPoint> {
 
     public static final String TAG_NAME = "name";
 
-    private final @NotNull String tag;
-    private final @NotNull String type;
+    @NotNull
+    private final String tag;
+    @NotNull
+    private final String type;
 
     public PointNamePlaceholder() {
         this(SPlaceHolders.POINT, TAG_NAME);
     }
 
-    public PointNamePlaceholder(@NotNull String tag, @NotNull String type) {
+    private PointNamePlaceholder(@NotNull String tag, @NotNull String type) {
         this.tag = tag;
         this.type = type;
     }
 
     @Override
-    public @NotNull Component apply(@NotNull Component message, @NotNull SPoint value) {
+    @NotNull
+    public Component apply(@NotNull Component message, @NotNull SPoint value) {
         String replace;
         if (value instanceof StringIdentifier) {
             replace = ((StringIdentifier) value).identifier();
@@ -36,22 +39,26 @@ public class PointNamePlaceholder implements SPlaceHolder<SPoint> {
     }
 
     @Override
-    public @NotNull SPlaceHolder<SPoint> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
+    @NotNull
+    public SPlaceHolder<SPoint> copy(@NotNull String placeholderTag, @NotNull String placeholderName) {
         return new PointNamePlaceholder(placeholderTag, placeholderName);
     }
 
     @Override
-    public @NotNull String placeholderTagName() {
+    @NotNull
+    public String placeholderTagName() {
         return this.tag;
     }
 
     @Override
-    public @NotNull String placeholderTagType() {
+    @NotNull
+    public String placeholderTagType() {
         return this.type;
     }
 
     @Override
-    public @NotNull Class<SPoint> type() {
+    @NotNull
+    public Class<SPoint> type() {
         return SPoint.class;
     }
 }

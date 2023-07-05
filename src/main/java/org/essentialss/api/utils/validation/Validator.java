@@ -11,7 +11,8 @@ import java.util.LinkedList;
 public class Validator<T> {
 
     private final Deque<ValidationRule<T>> rules = new LinkedList<>();
-    private final @Nullable T value;
+    @Nullable
+    private final T value;
 
     public Validator(@Nullable T value) {
         this.value = value;

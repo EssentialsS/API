@@ -7,13 +7,12 @@ import org.spongepowered.api.world.Location;
 
 public interface PlayerTeleportToPointEvent extends PlayerTeleportEvent, Cancellable {
 
-    @NotNull SPoint point();
-
     @Override
-    default @NotNull Location<?, ?> newLocation() {
-        return this
-                .point()
-                .spongeLocation()
-                .orElseThrow(() -> new IllegalStateException("Could not world -> this shouldn't be possible"));
+    @NotNull
+    default Location<?, ?> newLocation() {
+        return this.point().spongeLocation().orElseThrow(() -> new IllegalStateException("Could not world -> this shouldn't be possible"));
     }
+
+    @NotNull
+    SPoint point();
 }

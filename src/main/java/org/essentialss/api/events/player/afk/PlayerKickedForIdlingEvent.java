@@ -14,18 +14,21 @@ public interface PlayerKickedForIdlingEvent extends Event, Cancellable {
     Optional<Component> kickAdaptedMessage();
 
     @Deprecated
-    default @NotNull Component kickMessage() {
-        return kickAdaptedMessage().orElse(Component.empty());
+    @NotNull
+    default Component kickMessage() {
+        return this.kickAdaptedMessage().orElse(Component.empty());
     }
 
     Optional<Component> originalKickAdaptedMessage();
 
     @Deprecated
-    default @NotNull Component originalKickMessage() {
-        return originalKickAdaptedMessage().orElse(Component.empty());
+    @NotNull
+    default Component originalKickMessage() {
+        return this.originalKickAdaptedMessage().orElse(Component.empty());
     }
 
-    @NotNull SGeneralPlayerData player();
+    @NotNull
+    SGeneralPlayerData player();
 
     void setKickMessage(@Nullable Component kickMessage);
 
