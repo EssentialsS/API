@@ -19,4 +19,4 @@ jobs:
           distribution: 'temurin'
           cache: gradle
       - name: Build with Gradle
-        run: gradlew clean package
+        run: ./gradlew clean package
