@@ -24,8 +24,8 @@ While the process is that methods and fields can be removed its not likely that 
         <dependencies>
             <dependency>
 	        <groupId>com.github.Essentialss</groupId>
-	        <artifactId>Essentialss</artifactId>
-	        <version>0.0.6</version>
+	        <artifactId>API</artifactId>
+	        <version>0.0.7</version>
 	    </dependency>
         </dependencies>
 
